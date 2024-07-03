@@ -44,12 +44,33 @@ app_server <- function(input, output, session) {
           event_ui
         )
       })
+      
+      # Add validation observers for each field
+      lapply(names(event$properties), function(prop_name) {
+        field <- event$properties[[prop_name]]
+        input_id <- NS("dynamic")(make.names(field$title[[input$language]]))
+        
+        observeEvent(input[[input_id]], {
+          value <- input[[input_id]]
+          validation_result <- validate_field(value, field)
+          
+          if (!validation_result$valid) {
+            shinyjs::addClass(input_id, "is-invalid")
+            shinyjs::html(paste0(input_id, "_validation"), validation_result$message)
+          } else {
+            shinyjs::removeClass(input_id, "is-invalid")
+            shinyjs::html(paste0(input_id, "_validation"), "")
+          }
+        })
+      })
     } else {
       output$dynamic_ui <- renderUI({
         p("No matching event found.")
       })
     }
   })
+
+
 
   # Update UI elements when language changes
   observeEvent(input$language, {

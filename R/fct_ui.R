@@ -45,14 +45,12 @@ create_properties_ui <- function(properties, ns, language = "en") {
 }
 
 
-
-
 #' Create individual widget
 #'
 #' @param element A parsed property structure
 #' @param ns A namespace function
 #' @param language The current language
-#' @return A UI widget
+#' @return A UI widget with validation
 create_widget <- function(element, ns = NS(NULL), language = "en") {
   if (is.null(element$type)) {
     return(NULL)
@@ -61,7 +59,7 @@ create_widget <- function(element, ns = NS(NULL), language = "en") {
   element_label <- element$title[[language]]
   element_code_name <- ns(make.names(element_label))
   
-  new_element <- switch(element$type,
+  input_element <- switch(element$type,
     "select" = {
       choices <- if (!is.null(element$choices)) {
         setNames(
@@ -92,17 +90,23 @@ create_widget <- function(element, ns = NS(NULL), language = "en") {
       } else {
         textInput(inputId = element_code_name, 
                   label = element_label,
-                  value = "", placeholder = if (!is.null(element$ui$`form-placeholder`)) element$ui$`form-placeholder` else "")
+                  value = "", 
+                  placeholder = if (!is.null(element$ui$`form-placeholder`)) element$ui$`form-placeholder` else "")
       }
     },
     NULL  # Default case for unknown types
   )
   
-  return(new_element)
+  validation_id <- paste0(element_code_name, "_validation")
+  
+  tagList(
+    div(
+      class = "form-group",
+      input_element,
+      tags$div(id = validation_id, class = "invalid-feedback")
+    )
+  )
 }
-
-
-
 
 
 

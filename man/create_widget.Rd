@@ -14,7 +14,7 @@ create_widget(element, ns = NS(NULL), language = "en")
 \item{language}{The current language}
 }
 \value{
-A UI widget
+A UI widget with validation
 }
 \description{
 Create individual widget

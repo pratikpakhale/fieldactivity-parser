@@ -5,6 +5,7 @@
 #' @param language The current language
 #' @return A list of UI elements
 create_ui <- function(parsed_schema, ns, language = "en") {
+  # Generate UI elements for each event in the parsed schema
   ui_elements <- lapply(parsed_schema, function(event) {
     event_properties <- create_properties_ui(event$properties, ns, language)
     tagList(event_properties)
@@ -12,9 +13,6 @@ create_ui <- function(parsed_schema, ns, language = "en") {
   
   return(tagList(ui_elements))
 }
-
-
-
 
 #' Create UI elements for properties
 #'
@@ -25,6 +23,7 @@ create_ui <- function(parsed_schema, ns, language = "en") {
 create_properties_ui <- function(properties, ns, language = "en") {
   lapply(properties, function(prop) {
     if (prop$type == "array" && !is.null(prop$items) && prop$items$type == "object") {
+      # Handle array of objects
       array_title <- h4(prop$title[[language]])
       array_items <- create_properties_ui(prop$items$properties, ns, language)
       tagList(
@@ -32,6 +31,7 @@ create_properties_ui <- function(properties, ns, language = "en") {
         div(class = "array-items", array_items)
       )
     } else if (prop$type == "object" && !is.null(prop$properties)) {
+      # Handle nested objects
       object_title <- h4(prop$title[[language]])
       object_properties <- create_properties_ui(prop$properties, ns, language)
       tagList(
@@ -39,11 +39,11 @@ create_properties_ui <- function(properties, ns, language = "en") {
         div(class = "object-properties", object_properties)
       )
     } else {
+      # Create individual widget for other property types
       create_widget(prop, ns, language)
     }
   })
 }
-
 
 #' Create individual widget
 #'
@@ -59,6 +59,7 @@ create_widget <- function(element, ns = NS(NULL), language = "en") {
   element_label <- element$title[[language]]
   element_code_name <- ns(make.names(element_label))
   
+  # Create input element based on the property type
   input_element <- switch(element$type,
     "select" = {
       choices <- if (!is.null(element$choices)) {
@@ -99,6 +100,7 @@ create_widget <- function(element, ns = NS(NULL), language = "en") {
   
   validation_id <- paste0(element_code_name, "_validation")
   
+  # Wrap input element with validation feedback div
   tagList(
     div(
       class = "form-group",
@@ -107,8 +109,6 @@ create_widget <- function(element, ns = NS(NULL), language = "en") {
     )
   )
 }
-
-
 
 #' Get choices for select inputs
 #'
@@ -144,6 +144,7 @@ update_ui_element <- function(session, element, value, language = "en") {
   
   element_code_name <- NS("dynamic")(names(element)[1])
   
+  # Update the UI element based on its type
   if (element$type == "select") {
     updateSelectInput(session, element_code_name, choices = get_select_choices(element, language), selected = value)
   } else if (element$type == "number") {
@@ -154,4 +155,3 @@ update_ui_element <- function(session, element, value, language = "en") {
     updateTextInput(session, element_code_name, value = value)
   }
 }
-

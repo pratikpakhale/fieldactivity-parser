@@ -37,6 +37,7 @@ app_server <- function(input, output, session) {
     }
     
     if (!is.null(event)) {
+      # Render the UI for the selected event
       output$dynamic_ui <- renderUI({
         event_ui <- create_ui(list(event), ns = NS("dynamic"), language = input$language)
         tagList(
@@ -50,18 +51,19 @@ app_server <- function(input, output, session) {
         field <- event$properties[[prop_name]]
         input_id <- NS("dynamic")(make.names(field$title[[input$language]]))
         
-        observeEvent(input[[input_id]], {
-          value <- input[[input_id]]
-          validation_result <- validate_field(value, field)
+        # observeEvent(input[[input_id]], {
+        #   value <- input[[input_id]]
+        #   validation_result <- validate_field(value, field)
           
-          if (!validation_result$valid) {
-            shinyjs::addClass(input_id, "is-invalid")
-            shinyjs::html(paste0(input_id, "_validation"), validation_result$message)
-          } else {
-            shinyjs::removeClass(input_id, "is-invalid")
-            shinyjs::html(paste0(input_id, "_validation"), "")
-          }
-        })
+        #   # Update UI based on validation result
+        #   if (!validation_result$valid) {
+        #     shinyjs::addClass(input_id, "is-invalid")
+        #     shinyjs::html(paste0(input_id, "_validation"), validation_result$message)
+        #   } else {
+        #     shinyjs::removeClass(input_id, "is-invalid")
+        #     shinyjs::html(paste0(input_id, "_validation"), "")
+        #   }
+        # })
       })
     } else {
       output$dynamic_ui <- renderUI({
@@ -69,8 +71,6 @@ app_server <- function(input, output, session) {
       })
     }
   })
-
-
 
   # Update UI elements when language changes
   observeEvent(input$language, {
@@ -89,6 +89,7 @@ app_server <- function(input, output, session) {
       }
       
       if (!is.null(event)) {
+        # Update UI elements for the selected event
         lapply(names(event$properties), function(prop_name) {
           element <- event$properties[[prop_name]]
           if (!is.null(element) && !is.null(element$type)) {
@@ -103,6 +104,3 @@ app_server <- function(input, output, session) {
     }
   })
 }
-
-
-

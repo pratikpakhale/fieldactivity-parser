@@ -6,13 +6,15 @@
 #' @return A list of UI elements
 create_ui <- function(parsed_schema, ns, language = "en") {
   ui_elements <- lapply(parsed_schema, function(event) {
-    event_title <- h3(event$title[[language]])
     event_properties <- create_properties_ui(event$properties, ns, language)
-    tagList(event_title, event_properties)
+    tagList(event_properties)
   })
   
-  return(ui_elements)
+  return(tagList(ui_elements))
 }
+
+
+
 
 #' Create UI elements for properties
 #'
@@ -25,12 +27,23 @@ create_properties_ui <- function(properties, ns, language = "en") {
     if (prop$type == "array" && !is.null(prop$items) && prop$items$type == "object") {
       array_title <- h4(prop$title[[language]])
       array_items <- create_properties_ui(prop$items$properties, ns, language)
-      tagList(array_title, array_items)
+      tagList(
+        array_title,
+        div(class = "array-items", array_items)
+      )
+    } else if (prop$type == "object" && !is.null(prop$properties)) {
+      object_title <- h4(prop$title[[language]])
+      object_properties <- create_properties_ui(prop$properties, ns, language)
+      tagList(
+        object_title,
+        div(class = "object-properties", object_properties)
+      )
     } else {
       create_widget(prop, ns, language)
     }
   })
 }
+
 
 
 
@@ -48,43 +61,47 @@ create_widget <- function(element, ns = NS(NULL), language = "en") {
   element_label <- element$title[[language]]
   element_code_name <- ns(make.names(element_label))
   
-  new_element <- if (element$type == "select") {
-    choices <- if (!is.null(element$choices)) {
-      setNames(
-        sapply(element$choices, function(choice) choice$value),
-        sapply(element$choices, function(choice) choice$title[[language]])
-      )
-    } else {
-      NULL
-    }
-    selectInput(inputId = element_code_name, label = element_label, 
-                choices = choices,
-                selected = NULL)
-  } else if (element$type == "number") {
-    numericInput(inputId = element_code_name, 
-                 label = element_label, 
-                 value = NULL,
-                 min = if (!is.null(element$minimum)) element$minimum else NA,
-                 max = if (!is.null(element$maximum)) element$maximum else NA)
-  } else if (element$type == "string") {
-    if (!is.null(element$ui) && element$ui$`form-type` == "textAreaInput") {
-      textAreaInput(inputId = element_code_name, 
-                    label = element_label,
-                    value = "",
-                    resize = "vertical",
-                    placeholder = if (!is.null(element$ui$`form-placeholder`)) element$ui$`form-placeholder` else "")
-    } else {
-      textInput(inputId = element_code_name, 
-                label = element_label,
-                value = "",                     placeholder = if (!is.null(element$ui$`form-placeholder`)) element$ui$`form-placeholder` else "")
-    }
-  } else if (element$type == "array") {
-    # Handle array type (e.g., for planting_list)
-    NULL  # We'll handle this separately in create_properties_ui
-  }
+  new_element <- switch(element$type,
+    "select" = {
+      choices <- if (!is.null(element$choices)) {
+        setNames(
+          sapply(element$choices, function(choice) choice$value),
+          sapply(element$choices, function(choice) choice$title[[language]])
+        )
+      } else {
+        NULL
+      }
+      selectInput(inputId = element_code_name, label = element_label, 
+                  choices = choices,
+                  selected = NULL)
+    },
+    "number" = {
+      numericInput(inputId = element_code_name, 
+                   label = element_label, 
+                   value = NULL,
+                   min = if (!is.null(element$minimum)) element$minimum else NA,
+                   max = if (!is.null(element$maximum)) element$maximum else NA)
+    },
+    "string" = {
+      if (!is.null(element$ui) && element$ui$`form-type` == "textAreaInput") {
+        textAreaInput(inputId = element_code_name, 
+                      label = element_label,
+                      value = "",
+                      resize = "vertical",
+                      placeholder = if (!is.null(element$ui$`form-placeholder`)) element$ui$`form-placeholder` else "")
+      } else {
+        textInput(inputId = element_code_name, 
+                  label = element_label,
+                  value = "", placeholder = if (!is.null(element$ui$`form-placeholder`)) element$ui$`form-placeholder` else "")
+      }
+    },
+    NULL  # Default case for unknown types
+  )
   
   return(new_element)
 }
+
+
 
 
 

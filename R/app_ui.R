@@ -10,7 +10,8 @@ app_ui <- function(request) {
     titlePanel("Dynamic UI Generator"),
     sidebarLayout(
       sidebarPanel(
-        selectInput("language", "Select Language", choices = c("en", "fi", "sv"))
+        selectInput("language", "Select Language", choices = c("en", "fi", "sv")),
+        uiOutput("event_selector")
       ),
       mainPanel(
         uiOutput("dynamic_ui")
@@ -18,6 +19,9 @@ app_ui <- function(request) {
     )
   )
 }
+
+
+
 
 #' Add external Resources to the Application
 #'

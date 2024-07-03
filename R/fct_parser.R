@@ -52,6 +52,8 @@ parse_json_schema <- function(schema) {
 }
 
 
+
+
 #' Parse individual event
 #'
 #' @param event A list representing an event in the schema
@@ -69,6 +71,7 @@ parse_event <- function(event, schema) {
   
   return(parsed_event)
 }
+
 
 
 
@@ -94,11 +97,6 @@ parse_property <- function(prop, schema) {
         })
       }
     }
-  } else if (!is.null(prop$oneOf)) {
-    parsed_prop$type <- "select"
-    parsed_prop$choices <- lapply(prop$oneOf, function(choice) {
-      list(title = get_multilingual_field(choice, "title"), value = choice$const)
-    })
   }
   
   if (!is.null(prop$items)) {
@@ -115,6 +113,13 @@ parse_property <- function(prop, schema) {
   
   if (!is.null(prop$minimum)) parsed_prop$minimum <- prop$minimum
   if (!is.null(prop$maximum)) parsed_prop$maximum <- prop$maximum
+  
+  if (!is.null(prop$oneOf)) {
+    parsed_prop$type <- "select"
+    parsed_prop$choices <- lapply(prop$oneOf, function(choice) {
+      list(title = get_multilingual_field(choice, "title"), value = choice$const)
+    })
+  }
   
   return(parsed_prop)
 }

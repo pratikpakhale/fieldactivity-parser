@@ -2,7 +2,7 @@
 #'
 #' @return The path to the schema file
 schema_file_path <- function() {
-  system.file("extdata", "schema_test.json", package = "fieldactivityParser")
+  system.file("extdata", "schema.json", package = "fieldactivityParser")
 }
 
 #' The application server-side
@@ -16,30 +16,72 @@ app_server <- function(input, output, session) {
   schema <- jsonlite::fromJSON(schema_file_path(), simplifyVector = FALSE)
   parsed_schema <- parse_json_schema(schema)
 
-  # Generate UI elements
-  output$dynamic_ui <- renderUI({
-    req(input$language)
-    ui_elements <- lapply(parsed_schema, function(event) {
-      event_title <- h3(event$title[[input$language]])
-      event_properties <- create_properties_ui(event$properties, NS("dynamic"), input$language)
-      tagList(event_title, event_properties)
-    })
-    tagList(ui_elements)
+  # Create event selector
+  output$event_selector <- renderUI({
+    event_choices <- sapply(parsed_schema, function(event) event$title[[input$language]])
+    selectInput("selected_event", "Select Event", choices = event_choices)
+  })
+
+  # Generate UI elements for the selected event
+  observeEvent(input$selected_event, {
+    req(input$selected_event)
+    
+    # Find the event by matching the title
+    selected_event_title <- input$selected_event
+    event <- NULL
+    for (e in parsed_schema) {
+      if (e$title[[input$language]] == selected_event_title) {
+        event <- e
+        break
+      }
+    }
+    
+    if (!is.null(event)) {
+      output$dynamic_ui <- renderUI({
+        event_ui <- create_ui(list(event), ns = NS("dynamic"), language = input$language)
+        tagList(
+          h3(event$title[[input$language]]),
+          event_ui
+        )
+      })
+    } else {
+      output$dynamic_ui <- renderUI({
+        p("No matching event found.")
+      })
+    }
   })
 
   # Update UI elements when language changes
   observeEvent(input$language, {
-    lapply(names(parsed_schema), function(event_type) {
-      lapply(names(parsed_schema[[event_type]]$properties), function(prop_name) {
-        element <- parsed_schema[[event_type]]$properties[[prop_name]]
-        if (!is.null(element) && !is.null(element$type)) {
-          tryCatch({
-            update_ui_element(session, element, NULL, input$language)
-          }, error = function(e) {
-            warning(paste("Error updating UI element:", prop_name, "-", e$message))
-          })
+    updateSelectInput(session, "selected_event", 
+                      choices = sapply(parsed_schema, function(event) event$title[[input$language]]))
+    
+    if (!is.null(input$selected_event)) {
+      # Find the event by matching the title
+      selected_event_title <- input$selected_event
+      event <- NULL
+      for (e in parsed_schema) {
+        if (e$title[[input$language]] == selected_event_title) {
+          event <- e
+          break
         }
-      })
-    })
+      }
+      
+      if (!is.null(event)) {
+        lapply(names(event$properties), function(prop_name) {
+          element <- event$properties[[prop_name]]
+          if (!is.null(element) && !is.null(element$type)) {
+            tryCatch({
+              update_ui_element(session, element, NULL, input$language)
+            }, error = function(e) {
+              warning(paste("Error updating UI element:", prop_name, "-", e$message))
+            })
+          }
+        })
+      }
+    }
   })
 }
+
+
+

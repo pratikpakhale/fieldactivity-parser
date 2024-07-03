@@ -1,0 +1,483 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "management-event.schema.json",
+  "@context": {
+    "@language": "en",
+    "title": {
+      "@id": "dc:title",
+      "@language": "en"
+    },
+    "title_fi": {
+      "@id": "dc:title",
+      "@language": "fi"
+    },
+    "title_sv": {
+      "@id": "dc:title",
+      "@language": "sv"
+    },
+    "unitless_title": {
+      "@id": "fo:unitless_title",
+      "@language": "en"
+    },
+    "unitless_title_fi": {
+      "@id": "fo:unitless_title",
+      "@language": "fi"
+    },
+    "unitless_title_sv": {
+      "@id": "fo:unitless_title",
+      "@language": "sv"
+    },
+    "description": {
+      "@id": "dc:description",
+      "@language": "en"
+    },
+    "description_fi": {
+      "@id": "dc:description",
+      "@language": "fi"
+    },
+    "description_sv": {
+      "@id": "dc:description",
+      "@language": "sv"
+    },
+    "form-placeholder": {
+      "@id": "fo:form-placeholder",
+      "@language": "en"
+    },
+    "form-placeholder_fi": {
+      "@id": "fo:form-placeholder",
+      "@language": "fi"
+    },
+    "form-placeholder_sv": {
+      "@id": "fo:form-placeholder",
+      "@language": "sv"
+    }
+  },
+  "title": "management event",
+  "title_fi": "tilanhoitotapahtuma",
+  "title_sv": "inträffande av metoden",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "url",
+      "const": "https://raw.githubusercontent.com/hamk-uas/fieldobservatory-data-schemas/main/management-event.schema.json"
+    },
+    "mgmt_operations_event": {
+      "title": "event",
+      "title_en": "event",
+      "title_fi": "tapahtuma",
+      "type": "string"
+    },
+    "date": {
+      "title": "date",
+      "title_en": "the date when the activity was performed",
+      "title_fi": "päivä jolloin tapahtuma tapahtui",
+      "type": "string",
+      "format": "date"
+    },
+    "mgmt_event_short_notes": {
+      "title": "description",
+      "title_en": "description",
+      "title_fi": "kuvaus",
+      "type": "string",
+      "x-ui": {
+        "placeholder": "A high level description of the event, e.g. \"first harvest of the year\" or \"spring fertilization\". This will appear on the event list.",
+        "placeholder_fi": "Yleinen kuvaus tapahtumasta, esim. \"vuoden ensimmäinen sadonkorjuu\" tai \"kevätlannoitus\". Tämä tulee näkyviin tapahtumalistaan."
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "$id": "#planting",
+      "title": "sowing",
+      "title2": "planting",
+      "title_fi": "kylvö",
+      "title_sv": "sådd",
+      "properties": {
+        "mgmt_operations_event": {
+          "title": "sowing",
+          "title2": "planting",
+          "title_fi": "kylvö",
+          "title_sv": "sådd",
+          "const": "planting"
+        },
+        "planting_list": {
+          "type": "array",
+          "title": "planting list",
+          "title_fi": "kylvölista",
+          "items": {
+            "type": "object",
+            "properties": {
+              "planted_crop": {
+                "allOf": [
+                  {
+                    "title": "planted crop",
+                    "title_fi": "kylvetty laji",
+                    "title_sv": "sådd gröda"
+                  },
+                  {
+                    "$ref": "#/$defs/crop_ident_ICASA"
+                  }
+                ]
+              },
+              "planting_material_weight": {
+                "title": "weight of seeds (kg/ha)",
+                "title2": "planting material weight (kg/ha)",
+                "title_fi": "siementen määrä (kg/ha)",
+                "title2_fi": "kylvetyn materiaalin paino (kg/ha)",
+                "title_sv": "vikt av sådd material (kg/ha)",
+                "type": "number",
+                "minimum": 0,
+                "x-ui": {
+                  "unit": "kg/ha",
+                  "unitless_title": "weight of seeds",
+                  "unitless_title2": "planting material weight",
+                  "unitless_title_fi": "siementen määrä",
+                  "unitless_title2_fi": "kylvetyn materiaalin paino",
+                  "unitless_title_sv": "vikt av sådd material"
+                }
+              },
+              "planting_depth": {
+                "title": "sowing depth (mm)",
+                "title2": "planting depth (mm)",
+                "title_fi": "kylvösyvyys (mm)",
+                "title2_fi": "sådjup (mm)",
+                "type": "number",
+                "minimum": 0,
+                "x-ui": {
+                  "unit": "mm",
+                  "unitless_title": "sowing depth",
+                  "unitless_title2": "planting depth",
+                  "unitless_title_fi": "kylvösyvyys",
+                  "unitless_title2_fi": "sådjup"
+                }
+              },
+              "planting_material_source": {
+                "title": "source of seeds",
+                "title2": "planting material source",
+                "title_fi": "siementen alkuperä",
+                "title2_fi": "kylvetyn materiaalin alkuperä",
+                "title_sv": "ursprung på sådda materialet",
+                "type": "string",
+                "x-ui": {
+                  "form-type": "textInput",
+                  "form-placeholder": "commercial / own seeds, seed cultivar, etc.",
+                  "form-placeholder_fi": "ostetut / omat siemenet, lajike, jne."
+                }
+              }
+            },
+            "required": ["planted_crop"]
+          },
+          "minItems": 1
+        },
+        "mgmt_event_long_notes": {
+          "title": "sowing notes",
+          "title2": "planting notes",
+          "title_fi": "kylvömuistiinpanoja",
+          "title2_fi": "kylvömuistiinpanot",
+          "title_sv": "såddanteckningar",
+          "type": "string",
+          "x-ui": {
+            "form-type": "textAreaInput",
+            "form-placeholder": "any notes or observations about the event, e.g. \"soil was drier than usual at the time of sowing\"",
+            "form-placeholder_fi": "mitä tahansa tapahtumaan liittyviä muistiinpanoja tai havaintoja, esim. \"maa oli tavallista kuivempi\""
+          }
+        }
+      },
+      "required": ["date", "planting_list"]
+    }
+  ],
+  "$defs": {
+    "crop_ident_ICASA": {
+      "type": "string",
+      "oneOf": [
+        {
+          "title": "timothy (Phleum pratense)",
+          "title_fi": "timotei (Phleum pratense)",
+          "title_sv": "timotej (Phleum pratense)",
+          "const": "FRG"
+        },
+        {
+          "title": "wheat (Triticum spp.)",
+          "title_fi": "vehnä (Triticum spp.)",
+          "title_sv": "vete (Triticum spp.)",
+          "const": "WHT"
+        },
+        {
+          "title": "oats (Avena sativa)",
+          "title_fi": "kaura (Avena sativa)",
+          "title_sv": "havre (Avena sativa)",
+          "const": "OAT"
+        },
+        {
+          "title": "rye (Secale cereale)",
+          "title_fi": "ruis (Secale cereale)",
+          "const": "RYE"
+        },
+        {
+          "title": "barley (Hordeum vulgare)",
+          "title_fi": "ohra (Hordeum vulgare)",
+          "title_sv": "korn (Hordeum vulgare)",
+          "const": "BAR"
+        },
+        {
+          "title": "mixed grain",
+          "title_fi": "seosvilja",
+          "const": "ZZ1"
+        },
+        {
+          "title": "Mixed grass",
+          "title_fi": "Seosruoho",
+          "const": "ZZ3"
+        },
+        {
+          "title": "buckwheat (Fagopyrum esculentum)",
+          "title_fi": "tattari (Fagopyrum esculentum)",
+          "const": "BWH"
+        },
+        {
+          "title": "potato (Solanum tuberosum)",
+          "title_fi": "peruna (Solanum tuberosum)",
+          "const": "POT"
+        },
+        {
+          "title": "sugar beet (Beta vulgaris var. altissima)",
+          "title_fi": "sokerijuurikas (Beta vulgaris var. altissima)",
+          "const": "SBT"
+        },
+        {
+          "title": "pea (Pisum sativum)",
+          "title_fi": "herne (Pisum sativum)",
+          "const": "PEA"
+        },
+        {
+          "title": "faba bean (Vicia faba)",
+          "title_fi": "härkäpapu (Vicia faba)",
+          "const": "FBN"
+        },
+        {
+          "title": "turnip rape (Brassica rapa subsp. oleifera)",
+          "title_fi": "rypsi (Brassica rapa subsp. oleifera)",
+          "const": "RYP"
+        },
+        {
+          "title": "rapeseed (Brassica napus subsp. napus)",
+          "title_fi": "rapsi (Brassica napus subsp. napus)",
+          "const": "RAP"
+        },
+        {
+          "title": "flax (Linum usitatissimum)",
+          "title_fi": "pellava (Linum usitatissimum)",
+          "const": "FLX"
+        },
+        {
+          "title": "caraway (Carum carvi)",
+          "title_fi": "kumina (Carum carvi)",
+          "const": "CCA"
+        },
+        {
+          "title": "reed canary grass (Phalaris arundinacea)",
+          "title_fi": "ruokohelpi (Phalaris arundinacea)",
+          "const": "PHA"
+        },
+        {
+          "title": "red clover (Trifolium pratense)",
+          "title_fi": "puna-apila (Trifolium pratense)",
+          "const": "RCL"
+        },
+        {
+          "title": "white clover (Trifolium repens)",
+          "title_fi": "valkoapila (Trifolium repens)",
+          "const": "WCL"
+        },
+        {
+          "title": "alsike clover (Trifolium hybridum)",
+          "title_fi": "alsikeapila (Trifolium hybridum)",
+          "const": "ACL"
+        },
+        {
+          "title": "alfalfa (Medicago sativa)",
+          "title_fi": "sinimailanen (Medicago sativa)",
+          "const": "ALF"
+        },
+        {
+          "title": "oilseed radish (Raphanus sativus var. oleiformis)",
+          "title_fi": "öljyretikka (Raphanus sativus var. oleiformis)",
+          "const": "RSO"
+        },
+        {
+          "title": "common vetch (Vicia sativa)",
+          "title_fi": "rehuvirna (Vicia sativa)",
+          "const": "VSA"
+        },
+        {
+          "title": "smooth brome (Bromus inermis)",
+          "title_fi": "rehukattara (Bromus inermis)",
+          "const": "BRI"
+        },
+        {
+          "title": "meadow fescue (Festuca pratensis)",
+          "title_fi": "nurminata (Festuca pratensis)",
+          "title_sv": "ängssvingel (Festuca pratensis)",
+          "const": "FEP"
+        },
+        {
+          "title": "perennial ryegrass (Lolium perenne)",
+          "title_fi": "englanninraiheinä (Lolium perenne)",
+          "const": "RGP"
+        },
+        {
+          "title": "kentucky bluegrass (Poa pratensis)",
+          "title_fi": "niittynurmikka (Poa pratensis)",
+          "const": "POA"
+        },
+        {
+          "title": "sudan grass (Sorghum × drummondii)",
+          "title_fi": "sudaninruoho (Sorghum × drummondii)",
+          "const": "SDR"
+        },
+        {
+          "title": "annual ryegrass (Festuca perennis / Lolium multiflorum)",
+          "title_fi": "italianraiheinä (Festuca perennis / Lolium multiflorum)",
+          "const": "RGA"
+        },
+        {
+          "title": "tall fescue (Festuca arundinacea / Schedonorus arundinaceus)",
+          "title_fi": "ruokonata (Festuca arundinacea / Schedonorus arundinaceus)",
+          "const": "TFS"
+        },
+        {
+          "title": "hairy vetch (Vicia villosa)",
+          "title_fi": "ruisvirna (Vicia villosa)",
+          "const": "HVT"
+        },
+        {
+          "title": "persian clover (Trifolium resupinatum var. majus)",
+          "title_fi": "persianapila (Trifolium resupinatum var. majus)",
+          "const": "TRM"
+        },
+        {
+          "title": "hybrid fescue (x Festulolium loliaceum)",
+          "title_fi": "rainata (x Festulolium loliaceum)",
+          "const": "XFL"
+        },
+        {
+          "title": "common chicory (Cichorium intybus)",
+          "title_fi": "sikuri (Cichorium intybus)",
+          "const": "CII"
+        },
+        {
+          "title": "lacy phacelia (Phacelia tanacetifolia)",
+          "title_fi": "aitohunajakukka (Phacelia tanacetifolia)",
+          "const": "PHT"
+        }
+      ]
+    },
+    "fertilizer_applic_method": {
+      "type": "string",
+      "oneOf": [
+        {
+          "title": "broadcast, not incorporated",
+          "title_fi": "levitetty pinnalle, ei sekoitettu",
+          "const": "AP001"
+        },
+        {
+          "title": "broadcast, incorporated",
+          "title_fi": "levitetty ja sekoitettu",
+          "const": "AP002"
+        },
+        {
+          "title": "banded on surface",
+          "title_fi": "nauhoina pinnalla",
+          "const": "AP003"
+        },
+        {
+          "title": "banded beneath surface",
+          "title_fi": "sijoituslannoitus",
+          "const": "AP004"
+        },
+        {
+          "title": "applied in irrigation water",
+          "title_fi": "kasteluveden mukana",
+          "const": "AP005"
+        },
+        {
+          "title": "foliar spray",
+          "title_fi": "suihkutettu lehdelle",
+          "const": "AP006"
+        },
+        {
+          "title": "bottom of hole",
+          "title_fi": "bottom of hole -käännös",
+          "const": "AP007"
+        },
+        {
+          "title": "on the seed",
+          "title_fi": "siemenen pinnassa",
+          "const": "AP008"
+        },
+        {
+          "title": "injected",
+          "title_fi": "ruiskutettu pinnan alle",
+          "const": "AP009"
+        }
+      ]
+    },
+    "mulch_type": {
+      "type": "string",
+      "oneOf": [
+        {
+          "title": "polyethylene sheet - solid",
+          "title_fi": "katemuovi (PE)",
+          "const": "MT001"
+        },
+        {
+          "title": "polyethylene sheet - perforated",
+          "title_fi": "rei'itetty katemuovi (PE)",
+          "const": "MT002"
+        },
+        {
+          "title": "landscape fabric",
+          "title_fi": "maisemointikangas",
+          "const": "MT003"
+        },
+        {
+          "title": "paper",
+          "title_fi": "paperi",
+          "const": "MT004"
+        },
+        {
+          "title": "grass clippings",
+          "title_fi": "leikattu ruoho",
+          "const": "MT005"
+        },
+        {
+          "title": "pine needles",
+          "title_fi": "männynneulaset",
+          "const": "MT006"
+        },
+        {
+          "title": "straw",
+          "title_fi": "olki",
+          "const": "MT007"
+        },
+        {
+          "title": "foil",
+          "title_fi": "folio (foil?)",
+          "const": "MT008"
+        },
+        {
+          "title": "foil coated plastic",
+          "title_fi": "muovipäällysteinen folio (foil coated with plastic?)",
+          "const": "MT009"
+        },
+        {
+          "title": "photodegradable plastic",
+          "title_fi": "valohajoava muovi",
+          "const": "MT010"
+        }
+      ]
+    }
+  },
+  "required": ["mgmt_operations_event"]
+}

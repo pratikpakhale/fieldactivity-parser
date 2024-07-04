@@ -25,7 +25,7 @@ app_server <- function(input, output, session) {
   # Generate UI elements for the selected event
   observeEvent(input$selected_event, {
     req(input$selected_event)
-    
+
     # Find the event by matching the title
     selected_event_title <- input$selected_event
     event <- NULL
@@ -35,7 +35,7 @@ app_server <- function(input, output, session) {
         break
       }
     }
-    
+
     if (!is.null(event)) {
       # Render the UI for the selected event
       output$dynamic_ui <- renderUI({
@@ -45,16 +45,16 @@ app_server <- function(input, output, session) {
           event_ui
         )
       })
-      
+
       # Add validation observers for each field
       lapply(names(event$properties), function(prop_name) {
         field <- event$properties[[prop_name]]
         input_id <- NS("dynamic")(make.names(field$title[[input$language]]))
-        
+
         # observeEvent(input[[input_id]], {
         #   value <- input[[input_id]]
         #   validation_result <- validate_field(value, field)
-          
+
         #   # Update UI based on validation result
         #   if (!validation_result$valid) {
         #     shinyjs::addClass(input_id, "is-invalid")
@@ -74,9 +74,10 @@ app_server <- function(input, output, session) {
 
   # Update UI elements when language changes
   observeEvent(input$language, {
-    updateSelectInput(session, "selected_event", 
-                      choices = sapply(parsed_schema, function(event) event$title[[input$language]]))
-    
+    updateSelectInput(session, "selected_event",
+      choices = sapply(parsed_schema, function(event) event$title[[input$language]])
+    )
+
     if (!is.null(input$selected_event)) {
       # Find the event by matching the title
       selected_event_title <- input$selected_event
@@ -87,17 +88,20 @@ app_server <- function(input, output, session) {
           break
         }
       }
-      
+
       if (!is.null(event)) {
         # Update UI elements for the selected event
         lapply(names(event$properties), function(prop_name) {
           element <- event$properties[[prop_name]]
           if (!is.null(element) && !is.null(element$type)) {
-            tryCatch({
-              update_ui_element(session, element, NULL, input$language)
-            }, error = function(e) {
-              warning(paste("Error updating UI element:", prop_name, "-", e$message))
-            })
+            tryCatch(
+              {
+                update_ui_element(session, element, NULL, input$language)
+              },
+              error = function(e) {
+                warning(paste("Error updating UI element:", prop_name, "-", e$message))
+              }
+            )
           }
         })
       }

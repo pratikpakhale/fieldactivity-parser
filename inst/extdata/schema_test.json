@@ -88,103 +88,142 @@
   },
   "oneOf": [
     {
-      "$id": "#planting",
-      "title": "sowing",
-      "title2": "planting",
-      "title_fi": "kylvö",
-      "title_sv": "sådd",
+      "$id": "#observation",
+      "title": "observation",
+      "title_fi": "havainto",
+      "title_sv": "observation",
       "properties": {
         "mgmt_operations_event": {
-          "title": "sowing",
-          "title2": "planting",
-          "title_fi": "kylvö",
-          "title_sv": "sådd",
-          "const": "planting"
+          "title": "observation",
+          "title_fi": "havainto",
+          "title_sv": "observation",
+          "const": "observation"
         },
-        "planting_list": {
-          "type": "array",
-          "title": "planting list",
-          "title_fi": "kylvölista",
-          "items": {
-            "type": "object",
-            "properties": {
-              "planted_crop": {
-                "allOf": [
-                  {
-                    "title": "planted crop",
-                    "title_fi": "kylvetty laji",
-                    "title_sv": "sådd gröda"
-                  },
-                  {
-                    "$ref": "#/$defs/crop_ident_ICASA"
-                  }
-                ]
-              },
-              "planting_material_weight": {
-                "title": "weight of seeds (kg/ha)",
-                "title2": "planting material weight (kg/ha)",
-                "title_fi": "siementen määrä (kg/ha)",
-                "title2_fi": "kylvetyn materiaalin paino (kg/ha)",
-                "title_sv": "vikt av sådd material (kg/ha)",
-                "type": "number",
-                "minimum": 0,
-                "x-ui": {
-                  "unit": "kg/ha",
-                  "unitless_title": "weight of seeds",
-                  "unitless_title2": "planting material weight",
-                  "unitless_title_fi": "siementen määrä",
-                  "unitless_title2_fi": "kylvetyn materiaalin paino",
-                  "unitless_title_sv": "vikt av sådd material"
-                }
-              },
-              "planting_depth": {
-                "title": "sowing depth (mm)",
-                "title2": "planting depth (mm)",
-                "title_fi": "kylvösyvyys (mm)",
-                "title2_fi": "sådjup (mm)",
-                "type": "number",
-                "minimum": 0,
-                "x-ui": {
-                  "unit": "mm",
-                  "unitless_title": "sowing depth",
-                  "unitless_title2": "planting depth",
-                  "unitless_title_fi": "kylvösyvyys",
-                  "unitless_title2_fi": "sådjup"
-                }
-              },
-              "planting_material_source": {
-                "title": "source of seeds",
-                "title2": "planting material source",
-                "title_fi": "siementen alkuperä",
-                "title2_fi": "kylvetyn materiaalin alkuperä",
-                "title_sv": "ursprung på sådda materialet",
-                "type": "string",
-                "x-ui": {
-                  "form-type": "textInput",
-                  "form-placeholder": "commercial / own seeds, seed cultivar, etc.",
-                  "form-placeholder_fi": "ostetut / omat siemenet, lajike, jne."
-                }
-              }
-            },
-            "required": ["planted_crop"]
-          },
-          "minItems": 1
+        "observation_type": {
+          "title": "observation type",
+          "title_fi": "havainnon tyyppi",
+          "type": "string"
         },
         "mgmt_event_long_notes": {
-          "title": "sowing notes",
-          "title2": "planting notes",
-          "title_fi": "kylvömuistiinpanoja",
-          "title2_fi": "kylvömuistiinpanot",
-          "title_sv": "såddanteckningar",
-          "type": "string",
-          "x-ui": {
-            "form-type": "textAreaInput",
-            "form-placeholder": "any notes or observations about the event, e.g. \"soil was drier than usual at the time of sowing\"",
-            "form-placeholder_fi": "mitä tahansa tapahtumaan liittyviä muistiinpanoja tai havaintoja, esim. \"maa oli tavallista kuivempi\""
-          }
+          "title": "observations",
+          "title_fi": "havainnot",
+          "type": "string"
         }
       },
-      "required": ["date", "planting_list"]
+      "required": ["date", "observation_type"],
+      "oneOf": [
+        {
+          "title": "water observation",
+          "title_fi": "vesihavainto",
+          "properties": {
+            "observation_type": {
+              "title": "water observation",
+              "title_fi": "vesihavainto",
+              "const": "observation_type_water"
+            },
+            "floodwater_depth": {
+              "title": "floodwater depth (mm)",
+              "title_fi": "tulvaveden syvyys (mm)",
+              "type": "number",
+              "minimum": 0,
+              "x-ui": {
+                "unit": "mm",
+                "unitless_title": "floodwater depth",
+                "unitless_title_fi": "tulvaveden syvyys"
+              }
+            },
+            "water_table_depth": {
+              "title": "water table level (cm)",
+              "title_fi": "pohjaveden pinnan syvyys (cm)",
+              "type": "number",
+              "minimum": 0,
+              "x-ui": {
+                "unit": "cm",
+                "unitless_title": "water table level",
+                "unitless_title_fi": "pohjaveden pinnan syvyys"
+              }
+            }
+          }
+        },
+        {
+          "title": "animals",
+          "title_fi": "eläimet",
+          "properties": {
+            "observation_type": {
+              "title": "animals",
+              "title_fi": "eläimet",
+              "const": "observation_type_animals"
+            }
+          }
+        },
+        {
+          "title": "pests",
+          "title_fi": "tuholaiset",
+          "properties": {
+            "observation_type": {
+              "title": "pests",
+              "title_fi": "tuholaiset",
+              "const": "observation_type_pests"
+            },
+            "plant_pop_reduct_cum": {
+              "title": "amount of plants eaten (%, cumulative)",
+              "title_fi": "syötyjen kasvien määrä (%, kumulatiivinen)",
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0,
+              "x-ui": {
+                "unit": "%",
+                "unitless_title": "amount of plants eaten",
+                "unitless_title_fi": "syötyjen kasvien määrä"
+              }
+            }
+          }
+        },
+        {
+          "title": "disturbance",
+          "title_fi": "häiriö",
+          "properties": {
+            "observation_type": {
+              "title": "disturbance",
+              "title_fi": "häiriö",
+              "const": "observation_type_disturbance"
+            }
+          }
+        },
+        {
+          "title": "management",
+          "title_fi": "tilanhoito",
+          "properties": {
+            "observation_type": {
+              "title": "management",
+              "title_fi": "tilanhoito",
+              "const": "observation_type_management"
+            },
+            "fuel_amount": {
+              "title": "fuel used (liters/ha)",
+              "title_fi": "käytetty polttoaine (litraa/ha)",
+              "type": "number",
+              "minimum": 0,
+              "x-ui": {
+                "unit": "L/ha",
+                "unitless_title": "fuel used",
+                "unitless_title_fi": "käytetty polttoaine"
+              }
+            }
+          }
+        },
+        {
+          "title": "other",
+          "title_fi": "muu",
+          "properties": {
+            "observation_type": {
+              "title": "other",
+              "title_fi": "muu",
+              "const": "observation_type_other"
+            }
+          }
+        }
+      ]
     }
   ],
   "$defs": {

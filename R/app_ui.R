@@ -1,4 +1,3 @@
-
 #' The application User-Interface
 #'
 #' @param request Internal parameter for `{shiny}`.
@@ -40,8 +39,6 @@ app_ui <- function(request) {
     )
   )
 }
-
-
 
 
 #' Add external Resources to the Application

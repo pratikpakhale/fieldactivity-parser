@@ -40,15 +40,16 @@ flatten_schema <- function(schema) {
 #' @return A parsed schema structure
 parse_json_schema <- function(schema) {
   parsed_schema <- list()
-  
+
   # Iterate through each event in the schema's oneOf array
   for (event in schema$oneOf) {
     event_type <- event$properties$mgmt_operations_event$const
     parsed_schema[[event_type]] <- parse_event(event, schema)
   }
-  
+
   return(parsed_schema)
 }
+
 
 #' Parse individual event
 #'
@@ -57,17 +58,29 @@ parse_json_schema <- function(schema) {
 parse_event <- function(event, schema) {
   parsed_event <- list(
     title = get_multilingual_field(event, "title"),
-    properties = list()
+    properties = list(),
+    oneOf = list()
   )
-  
+
   # Parse each property of the event
   for (prop_name in names(event$properties)) {
     prop <- event$properties[[prop_name]]
     parsed_event$properties[[prop_name]] <- parse_property(prop, schema)
   }
-  
+
+  # Parse oneOf field if present
+  if (!is.null(event$oneOf)) {
+    parsed_event$oneOf <- lapply(event$oneOf, function(option) {
+      list(
+        title = get_multilingual_field(option, "title"),
+        properties = lapply(option$properties, function(p) parse_property(p, schema))
+      )
+    })
+  }
+
   return(parsed_event)
 }
+
 
 #' Parse individual property
 #'
@@ -78,9 +91,9 @@ parse_property <- function(prop, schema) {
     title = get_multilingual_field(prop, "title"),
     type = prop$type
   )
-  
-  # Handle allOf properties (typically used for references)
+
   if (!is.null(prop$allOf)) {
+    # Handle allOf properties (typically used for references)
     parsed_prop$type <- "select"
     ref <- prop$allOf[[2]]$`$ref`
     if (!is.null(ref)) {
@@ -93,36 +106,44 @@ parse_property <- function(prop, schema) {
       }
     }
   }
-  
-  # Handle array items
+
   if (!is.null(prop$items)) {
+    # Handle array items
     parsed_prop$items <- parse_property(prop$items, schema)
   }
-  
-  # Handle nested object properties
+
   if (!is.null(prop$properties)) {
+    # Handle nested object properties
     parsed_prop$properties <- lapply(prop$properties, function(p) parse_property(p, schema))
   }
-  
-  # Handle UI-specific properties
+
   if (!is.null(prop$`x-ui`)) {
+    # Handle UI-specific properties
     parsed_prop$ui <- prop$`x-ui`
   }
-  
-  # Handle numeric constraints
+
   if (!is.null(prop$minimum)) parsed_prop$minimum <- prop$minimum
   if (!is.null(prop$maximum)) parsed_prop$maximum <- prop$maximum
-  
-  # Handle oneOf properties (typically used for enums)
+
   if (!is.null(prop$oneOf)) {
-    parsed_prop$type <- "select"
-    parsed_prop$choices <- lapply(prop$oneOf, function(choice) {
-      list(title = get_multilingual_field(choice, "title"), value = choice$const)
+    parsed_prop$oneOf <- lapply(prop$oneOf, function(option) {
+      list(
+        title = if (!is.null(option$title)) {
+          get_multilingual_field(option, "title")
+        } else {
+          list(en = option$const, fi = option$const, sv = option$const)
+        },
+        value = option$const
+      )
     })
+    parsed_prop$type <- "select"
   }
-  
+
+
   return(parsed_prop)
 }
+
+
 
 #' Get multilingual field
 #'

@@ -1,5 +1,9 @@
 # Field Activity Parser
 
+### Todo
+
+Check the current todo list at - [todo.md](/todo.md)
+
 ## Overview
 
 This project is a Shiny application that generates a dynamic user interface based on a JSON schema. It's designed to create forms for various field activities, with support for multiple languages, different input types, and validation support.

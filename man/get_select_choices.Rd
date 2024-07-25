@@ -9,11 +9,23 @@ get_select_choices(element, language = "en")
 \arguments{
 \item{element}{The parsed property structure}
 
-\item{language}{The current language}
+\item{language}{The current language code (e.g., "en" for English)}
 }
 \value{
-A named vector of choices
+A named vector of choices for select inputs
 }
 \description{
-Get choices for select inputs
+This function extracts and formats choices for select input widgets.
+}
+\details{
+The function handles two cases for select input choices:
+1. Choices defined directly in the element
+2. Choices referenced from another part of the schema (not implemented)
+}
+\examples{
+element <- list(type = "select", choices = list(
+  list(value = "a", title = list(en = "Option A")),
+  list(value = "b", title = list(en = "Option B"))
+))
+choices <- get_select_choices(element, "en")
 }

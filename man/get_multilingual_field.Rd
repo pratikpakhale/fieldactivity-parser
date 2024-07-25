@@ -2,7 +2,7 @@
 % Please edit documentation in R/fct_parser.R
 \name{get_multilingual_field}
 \alias{get_multilingual_field}
-\title{Get multilingual field}
+\title{Get Multilingual Field}
 \usage{
 get_multilingual_field(obj, field)
 }
@@ -12,8 +12,19 @@ get_multilingual_field(obj, field)
 \item{field}{The base name of the field}
 }
 \value{
-A list of multilingual values
+A list of multilingual values with keys 'en', 'fi', and 'sv'
 }
 \description{
-Get multilingual field
+This function extracts multilingual values for a given field from an object.
+}
+\details{
+The function looks for the base field name and its language-specific variants
+(e.g., "field_fi" and "field_sv") in the provided object.
+}
+\examples{
+obj <- list(
+  title = "Example",
+  title_fi = "Esimerkki",
+  title_sv = "Exempel"
+)
 }

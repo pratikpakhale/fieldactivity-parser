@@ -2,16 +2,40 @@
 % Please edit documentation in R/fct_parser.R
 \name{parse_property}
 \alias{parse_property}
-\title{Parse individual property}
+\title{Parse a single property from the JSON schema}
 \usage{
 parse_property(prop, schema)
 }
 \arguments{
-\item{prop}{A list representing a property in the schema}
+\item{prop}{A list representing a single property from the JSON schema}
+
+\item{schema}{The complete JSON schema (used for reference if needed)}
 }
 \value{
-A parsed property structure
+A list containing the parsed property information, including:
+  - type: The data type of the property
+  - title: A list of titles in different languages
+  - description: A list of descriptions in different languages (if available)
+  - enum: A list of possible values for enum types
+  - minimum: The minimum value for numeric types (if applicable)
+  - maximum: The maximum value for numeric types (if applicable)
+  - oneOf: A list of parsed options for 'oneOf' properties
+  - Other fields specific to the property type
 }
 \description{
-Parse individual property
+This function takes a property object from the JSON schema and processes it
+to create a structured representation that can be used to generate UI elements.
+It handles various property types, including the 'oneOf' case for multiple options.
+}
+\details{
+The function handles various property types, including strings, numbers,
+booleans, and the special 'oneOf' case. For 'oneOf' properties, it recursively
+parses each option and its properties.
+}
+\examples{
+prop <- list(
+  type = "string",
+  title = "Example Property",
+  enum = c("Option 1", "Option 2")
+)
 }

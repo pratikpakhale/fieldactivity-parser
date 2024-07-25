@@ -1,9 +1,21 @@
 #' Create UI elements based on parsed schema
 #'
-#' @param parsed_schema A parsed schema structure
-#' @param ns A namespace function
-#' @param language The current language
-#' @return A list of UI elements
+#' This function generates the main UI structure for the fertilizer application form
+#' based on the parsed JSON schema.
+#'
+#' @param parsed_schema A list containing the parsed schema structure
+#' @param ns A namespace function for Shiny module compatibility
+#' @param language The current language code (e.g., "en" for English)
+#'
+#' @return A tagList containing all UI elements for the fertilizer application form
+#'
+#' @details
+#' The function iterates through each event in the parsed schema and creates UI elements
+#' for both common properties and oneOf sections. It uses helper functions
+#' create_properties_ui() and create_oneof_ui() to generate these elements.
+#'
+#' @examples
+#' parsed_schema <- parse_json_schema(schema)
 create_ui <- function(parsed_schema, ns, language = "en") {
   ui_elements <- lapply(parsed_schema, function(event) {
     event_properties <- create_properties_ui(event$properties, ns, language)
@@ -15,24 +27,42 @@ create_ui <- function(parsed_schema, ns, language = "en") {
 }
 
 
-#' Create UI elements for properties
+#' Create UI elements for a set of properties
 #'
-#' @param properties A list of properties
-#' @param ns A namespace function
-#' @param language The current language
-#' @return A list of UI elements
+#' This function generates Shiny UI elements based on the parsed properties
+#' from the JSON schema. It handles various property types and creates
+#' appropriate input widgets, including the special case for 'oneOf' properties.
+#'
+#' @param properties A list of parsed properties (output from parse_property)
+#' @param ns A namespace function for Shiny module compatibility
+#' @param language The current language code (e.g., "en" for English)
+#'
+#' @return A list of Shiny UI elements corresponding to the input properties
+#'
+#' @details
+#' The function creates UI elements for each property, handling different types:
+#' - For simple types (string, number, boolean), it calls create_widget()
+#' - For 'oneOf' properties, it creates a select input for choosing the option,
+#'   and nested property inputs for each option
+#'
+#' For 'oneOf' properties, the function:
+#' 1. Creates a select input for choosing between options
+#' 2. Generates UI elements for each option's properties
+#' 3. Implements JavaScript to show/hide property inputs based on selection
+#'
+#' @examples
+#' properties <- list(
+#'   name = list(type = "string", title = list(en = "Name")),
+#'   age = list(type = "number", title = list(en = "Age"))
+#' )
 create_properties_ui <- function(properties, ns, language = "en") {
   div(
-    # class = "flex-container",
-    # style = "display: flex; flex-wrap: wrap; gap: 10px;",
     lapply(properties, function(prop) {
       if (prop$type == "array" && !is.null(prop$items) && prop$items$type == "object") {
         # Handle array of objects
         array_title <- h4(prop$title[[language]])
         array_items <- create_properties_ui(prop$items$properties, ns, language)
         div(
-          class = "flex-item",
-          style = "flex: 1 1 100%;",
           array_title,
           div(class = "array-items", array_items)
         )
@@ -41,8 +71,6 @@ create_properties_ui <- function(properties, ns, language = "en") {
         object_title <- h4(prop$title[[language]])
         object_properties <- create_properties_ui(prop$properties, ns, language)
         div(
-          class = "flex-item",
-          style = "flex: 1 1 100%;",
           object_title,
           div(class = "object-properties", object_properties)
         )
@@ -64,15 +92,11 @@ create_properties_ui <- function(properties, ns, language = "en") {
         )
 
         return(div(
-          class = "flex-item",
-          style = "flex: 1 1 100%;",
           oneof_select
         ))
       } else {
         # Create individual widget for other property types
         div(
-          class = "flex-item",
-          style = "flex: 1 1 300px;",
           create_widget(prop, ns, language)
         )
       }
@@ -81,7 +105,25 @@ create_properties_ui <- function(properties, ns, language = "en") {
 }
 
 
-
+#' Create UI elements for oneOf sections
+#'
+#' This function generates UI elements for the oneOf sections in the schema,
+#' allowing users to select between different options.
+#'
+#' @param oneof A list containing the oneOf options from the parsed schema
+#' @param ns A namespace function for Shiny module compatibility
+#' @param language The current language code (e.g., "en" for English)
+#'
+#' @return A tagList containing UI elements for the oneOf section
+#'
+#' @details
+#' The function creates a select input for choosing between oneOf options and
+#' generates conditional panels for each option's properties. It uses
+#' create_properties_ui() to generate UI elements for each option's properties.
+#'
+#' @examples
+#' oneof <- parsed_schema$fertilizer$oneOf
+#' oneof_ui <- create_oneof_ui(oneof, ns, "en")
 create_oneof_ui <- function(oneof, ns, language = "en") {
   if (length(oneof) == 0) {
     return(NULL)
@@ -109,12 +151,27 @@ create_oneof_ui <- function(oneof, ns, language = "en") {
 
 
 
-#' Create individual widget
+#' Create individual widget for a property
+#'
+#' This function generates an appropriate Shiny input widget based on the
+#' property type and attributes.
 #'
 #' @param element A parsed property structure
-#' @param ns A namespace function
-#' @param language The current language
-#' @return A UI widget with validation
+#' @param ns A namespace function for Shiny module compatibility
+#' @param language The current language code (e.g., "en" for English)
+#'
+#' @return A tagList containing the input widget and validation element
+#'
+#' @details
+#' The function creates different types of input widgets based on the property type:
+#' - select: Creates a selectInput with choices from oneOf or choices attribute
+#' - number: Creates a numericInput with min and max constraints
+#' - string: Creates a textInput or textAreaInput based on UI specifications
+#' It also adds a validation element for each input.
+#'
+#' @examples
+#' element <- list(type = "number", title = list(en = "Age"), minimum = 0, maximum = 120)
+#' widget <- create_widget(element, ns, "en")
 create_widget <- function(element, ns = NS(NULL), language = "en") {
   if (is.null(element$type)) {
     return(NULL)
@@ -196,12 +253,26 @@ create_widget <- function(element, ns = NS(NULL), language = "en") {
 }
 
 
-
 #' Get choices for select inputs
 #'
+#' This function extracts and formats choices for select input widgets.
+#'
 #' @param element The parsed property structure
-#' @param language The current language
-#' @return A named vector of choices
+#' @param language The current language code (e.g., "en" for English)
+#'
+#' @return A named vector of choices for select inputs
+#'
+#' @details
+#' The function handles two cases for select input choices:
+#' 1. Choices defined directly in the element
+#' 2. Choices referenced from another part of the schema (not implemented)
+#'
+#' @examples
+#' element <- list(type = "select", choices = list(
+#'   list(value = "a", title = list(en = "Option A")),
+#'   list(value = "b", title = list(en = "Option B"))
+#' ))
+#' choices <- get_select_choices(element, "en")
 get_select_choices <- function(element, language = "en") {
   if (element$type == "select") {
     if (!is.null(element$choices)) {
@@ -220,10 +291,24 @@ get_select_choices <- function(element, language = "en") {
 
 #' Update UI element
 #'
+#' This function updates the value of a UI element based on its type.
+#'
 #' @param session The current Shiny session
 #' @param element The element to update
 #' @param value The new value
-#' @param language The current language
+#' @param language The current language code (e.g., "en" for English)
+#'
+#' @return NULL (updates are performed via side effects)
+#'
+#' @details
+#' The function updates different types of input widgets:
+#' - select: Updates choices and selected value
+#' - number: Updates numeric value
+#' - string: Updates text value (for both textInput and textAreaInput)
+#'
+#' @examples
+#' # Inside a Shiny server function:
+#' update_ui_element(session, element, "new value", "en")
 update_ui_element <- function(session, element, value, language = "en") {
   if (is.null(element) || is.null(element$type)) {
     return(NULL)

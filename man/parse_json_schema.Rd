@@ -2,16 +2,26 @@
 % Please edit documentation in R/fct_parser.R
 \name{parse_json_schema}
 \alias{parse_json_schema}
-\title{Parse JSON schema}
+\title{Parse JSON Schema}
 \usage{
 parse_json_schema(schema)
 }
 \arguments{
-\item{schema}{A list representing the JSON schema}
+\item{schema}{A list representing the complete JSON schema}
 }
 \value{
-A parsed schema structure
+A list containing parsed schema information for each event type
 }
 \description{
-Parse JSON schema
+This function takes a complete JSON schema and parses it into a structured format
+that can be used for UI generation and data validation.
+}
+\details{
+The function iterates through each event in the schema's 'oneOf' array and
+parses it using the `parse_event` function. The resulting structure is organized
+by event type.
+}
+\examples{
+schema <- jsonlite::fromJSON("schema.json", simplifyVector = FALSE)
+parsed_schema <- parse_json_schema(schema)
 }

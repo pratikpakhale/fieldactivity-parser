@@ -2,20 +2,32 @@
 % Please edit documentation in R/fct_ui.R
 \name{create_widget}
 \alias{create_widget}
-\title{Create individual widget}
+\title{Create individual widget for a property}
 \usage{
 create_widget(element, ns = NS(NULL), language = "en")
 }
 \arguments{
 \item{element}{A parsed property structure}
 
-\item{ns}{A namespace function}
+\item{ns}{A namespace function for Shiny module compatibility}
 
-\item{language}{The current language}
+\item{language}{The current language code (e.g., "en" for English)}
 }
 \value{
-A UI widget with validation
+A tagList containing the input widget and validation element
 }
 \description{
-Create individual widget
+This function generates an appropriate Shiny input widget based on the
+property type and attributes.
+}
+\details{
+The function creates different types of input widgets based on the property type:
+- select: Creates a selectInput with choices from oneOf or choices attribute
+- number: Creates a numericInput with min and max constraints
+- string: Creates a textInput or textAreaInput based on UI specifications
+It also adds a validation element for each input.
+}
+\examples{
+element <- list(type = "number", title = list(en = "Age"), minimum = 0, maximum = 120)
+widget <- create_widget(element, ns, "en")
 }

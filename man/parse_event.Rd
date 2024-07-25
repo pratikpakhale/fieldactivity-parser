@@ -2,16 +2,30 @@
 % Please edit documentation in R/fct_parser.R
 \name{parse_event}
 \alias{parse_event}
-\title{Parse individual event}
+\title{Parse Individual Event}
 \usage{
 parse_event(event, schema)
 }
 \arguments{
 \item{event}{A list representing an event in the schema}
+
+\item{schema}{The complete JSON schema (used for reference if needed)}
 }
 \value{
-A parsed event structure
+A list containing parsed event information, including:
+  - title: A list of titles in different languages
+  - properties: A list of parsed properties for the event
+  - oneOf: A list of parsed options for 'oneOf' sections (if present)
 }
 \description{
-Parse individual event
+This function parses a single event from the JSON schema, including its properties
+and any 'oneOf' sections.
+}
+\details{
+The function processes each property of the event and any 'oneOf' sections,
+creating a structured representation of the event.
+}
+\examples{
+event <- schema$oneOf[[1]]
+parsed_event <- parse_event(event, schema)
 }

@@ -1,43 +1,20 @@
-library(jsonlite)
-
-flatten_schema <- function(schema) {
-  flattened_schema <- schema
-
-  flatten_property <- function(prop) {
-    if (!is.null(prop$allOf)) {
-      # Merge all properties from allOf
-      merged_prop <- list()
-      for (item in prop$allOf) {
-        if (!is.null(item$`$ref`)) {
-          # Resolve reference and merge properties
-          ref_path <- strsplit(sub("^#/", "", item$`$ref`), "/")[[1]]
-          ref_def <- Reduce(`[[`, ref_path, schema)
-          merged_prop <- modifyList(merged_prop, ref_def)
-        } else {
-          # Merge non-reference properties
-          merged_prop <- modifyList(merged_prop, item)
-        }
-      }
-      return(merged_prop)
-    }
-    return(prop)
-  }
-
-  # Flatten oneOf properties
-  if (!is.null(flattened_schema$oneOf)) {
-    flattened_schema$oneOf <- lapply(flattened_schema$oneOf, function(event) {
-      event$properties <- lapply(event$properties, flatten_property)
-      return(event)
-    })
-  }
-
-  return(flattened_schema)
-}
-
-#' Parse JSON schema
+#' Parse JSON Schema
 #'
-#' @param schema A list representing the JSON schema
-#' @return A parsed schema structure
+#' This function takes a complete JSON schema and parses it into a structured format
+#' that can be used for UI generation and data validation.
+#'
+#' @param schema A list representing the complete JSON schema
+#'
+#' @return A list containing parsed schema information for each event type
+#'
+#' @details
+#' The function iterates through each event in the schema's 'oneOf' array and
+#' parses it using the `parse_event` function. The resulting structure is organized
+#' by event type.
+#'
+#' @examples
+#' schema <- jsonlite::fromJSON("schema.json", simplifyVector = FALSE)
+#' parsed_schema <- parse_json_schema(schema)
 parse_json_schema <- function(schema) {
   parsed_schema <- list()
 
@@ -51,10 +28,26 @@ parse_json_schema <- function(schema) {
 }
 
 
-#' Parse individual event
+#' Parse Individual Event
+#'
+#' This function parses a single event from the JSON schema, including its properties
+#' and any 'oneOf' sections.
 #'
 #' @param event A list representing an event in the schema
-#' @return A parsed event structure
+#' @param schema The complete JSON schema (used for reference if needed)
+#'
+#' @return A list containing parsed event information, including:
+#'   - title: A list of titles in different languages
+#'   - properties: A list of parsed properties for the event
+#'   - oneOf: A list of parsed options for 'oneOf' sections (if present)
+#'
+#' @details
+#' The function processes each property of the event and any 'oneOf' sections,
+#' creating a structured representation of the event.
+#'
+#' @examples
+#' event <- schema$oneOf[[1]]
+#' parsed_event <- parse_event(event, schema)
 parse_event <- function(event, schema) {
   parsed_event <- list(
     title = get_multilingual_field(event, "title"),
@@ -82,10 +75,36 @@ parse_event <- function(event, schema) {
 }
 
 
-#' Parse individual property
+#' Parse a single property from the JSON schema
 #'
-#' @param prop A list representing a property in the schema
-#' @return A parsed property structure
+#' This function takes a property object from the JSON schema and processes it
+#' to create a structured representation that can be used to generate UI elements.
+#' It handles various property types, including the 'oneOf' case for multiple options.
+#'
+#' @param prop A list representing a single property from the JSON schema
+#' @param schema The complete JSON schema (used for reference if needed)
+#'
+#' @return A list containing the parsed property information, including:
+#'   - type: The data type of the property
+#'   - title: A list of titles in different languages
+#'   - description: A list of descriptions in different languages (if available)
+#'   - enum: A list of possible values for enum types
+#'   - minimum: The minimum value for numeric types (if applicable)
+#'   - maximum: The maximum value for numeric types (if applicable)
+#'   - oneOf: A list of parsed options for 'oneOf' properties
+#'   - Other fields specific to the property type
+#'
+#' @details
+#' The function handles various property types, including strings, numbers,
+#' booleans, and the special 'oneOf' case. For 'oneOf' properties, it recursively
+#' parses each option and its properties.
+#'
+#' @examples
+#' prop <- list(
+#'   type = "string",
+#'   title = "Example Property",
+#'   enum = c("Option 1", "Option 2")
+#' )
 parse_property <- function(prop, schema) {
   parsed_prop <- list(
     title = get_multilingual_field(prop, "title"),
@@ -145,11 +164,25 @@ parse_property <- function(prop, schema) {
 
 
 
-#' Get multilingual field
+#' Get Multilingual Field
+#'
+#' This function extracts multilingual values for a given field from an object.
 #'
 #' @param obj A list containing multilingual fields
 #' @param field The base name of the field
-#' @return A list of multilingual values
+#'
+#' @return A list of multilingual values with keys 'en', 'fi', and 'sv'
+#'
+#' @details
+#' The function looks for the base field name and its language-specific variants
+#' (e.g., "field_fi" and "field_sv") in the provided object.
+#'
+#' @examples
+#' obj <- list(
+#'   title = "Example",
+#'   title_fi = "Esimerkki",
+#'   title_sv = "Exempel"
+#' )
 get_multilingual_field <- function(obj, field) {
   # Extract and return multilingual values for the given field
   list(

@@ -13,8 +13,21 @@ update_ui_element(session, element, value, language = "en")
 
 \item{value}{The new value}
 
-\item{language}{The current language}
+\item{language}{The current language code (e.g., "en" for English)}
+}
+\value{
+NULL (updates are performed via side effects)
 }
 \description{
-Update UI element
+This function updates the value of a UI element based on its type.
+}
+\details{
+The function updates different types of input widgets:
+- select: Updates choices and selected value
+- number: Updates numeric value
+- string: Updates text value (for both textInput and textAreaInput)
+}
+\examples{
+# Inside a Shiny server function:
+update_ui_element(session, element, "new value", "en")
 }

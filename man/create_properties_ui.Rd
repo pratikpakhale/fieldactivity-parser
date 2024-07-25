@@ -2,20 +2,39 @@
 % Please edit documentation in R/fct_ui.R
 \name{create_properties_ui}
 \alias{create_properties_ui}
-\title{Create UI elements for properties}
+\title{Create UI elements for a set of properties}
 \usage{
 create_properties_ui(properties, ns, language = "en")
 }
 \arguments{
-\item{properties}{A list of properties}
+\item{properties}{A list of parsed properties (output from parse_property)}
 
-\item{ns}{A namespace function}
+\item{ns}{A namespace function for Shiny module compatibility}
 
-\item{language}{The current language}
+\item{language}{The current language code (e.g., "en" for English)}
 }
 \value{
-A list of UI elements
+A list of Shiny UI elements corresponding to the input properties
 }
 \description{
-Create UI elements for properties
+This function generates Shiny UI elements based on the parsed properties
+from the JSON schema. It handles various property types and creates
+appropriate input widgets, including the special case for 'oneOf' properties.
+}
+\details{
+The function creates UI elements for each property, handling different types:
+- For simple types (string, number, boolean), it calls create_widget()
+- For 'oneOf' properties, it creates a select input for choosing the option,
+  and nested property inputs for each option
+
+For 'oneOf' properties, the function:
+1. Creates a select input for choosing between options
+2. Generates UI elements for each option's properties
+3. Implements JavaScript to show/hide property inputs based on selection
+}
+\examples{
+properties <- list(
+  name = list(type = "string", title = list(en = "Name")),
+  age = list(type = "number", title = list(en = "Age"))
+)
 }

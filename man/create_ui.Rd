@@ -7,15 +7,24 @@
 create_ui(parsed_schema, ns, language = "en")
 }
 \arguments{
-\item{parsed_schema}{A parsed schema structure}
+\item{parsed_schema}{A list containing the parsed schema structure}
 
-\item{ns}{A namespace function}
+\item{ns}{A namespace function for Shiny module compatibility}
 
-\item{language}{The current language}
+\item{language}{The current language code (e.g., "en" for English)}
 }
 \value{
-A list of UI elements
+A tagList containing all UI elements for the fertilizer application form
 }
 \description{
-Create UI elements based on parsed schema
+This function generates the main UI structure for the fertilizer application form
+based on the parsed JSON schema.
+}
+\details{
+The function iterates through each event in the parsed schema and creates UI elements
+for both common properties and oneOf sections. It uses helper functions
+create_properties_ui() and create_oneof_ui() to generate these elements.
+}
+\examples{
+parsed_schema <- parse_json_schema(schema)
 }

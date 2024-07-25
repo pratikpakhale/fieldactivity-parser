@@ -11,7 +11,8 @@ License: What license is it under?
 Imports: 
     config (>= 0.3.2),
     golem (>= 0.4.1),
-    shiny (>= 1.8.1)
+    shiny (>= 1.8.1),
+    jsonlite (>= 1.8.8)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1

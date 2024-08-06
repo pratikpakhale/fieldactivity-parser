@@ -16,27 +16,18 @@
 #' schema <- jsonlite::fromJSON("schema.json", simplifyVector = FALSE)
 #' parsed_schema <- parse_json_schema(schema)
 parse_json_schema <- function(schema) {
-  parsed_schema <- list()
-
   # Iterate through each event in the schema's oneOf array
   # for (event in schema) {
   #   event_type <- event$properties$mgmt_operations_event$const
   #   parsed_schema[[event_type]] <- parse_event(event, schema)
   # }
 
-  event_type <- schema$properties$mgmt_operations_event$const
-  if (is.null(event_type)) {
-    event_type <- schema$properties$mgmt_operations_event$title
-  }
-  if (!is.null(event_type) && event_type != "") {
-    parsed_schema[[event_type]] <- parse_event(schema, schema)
-  } else {
-    parsed_schema[["Management Event"]] <- parse_event(schema, schema)
-    warning("event_type is NULL or empty")
-  }
+
+  event <- parse_event(schema, schema)
 
 
-  return(parsed_schema)
+
+  return(event)
 }
 
 
@@ -158,7 +149,7 @@ parse_property <- function(prop, schema) {
 
   if (!is.null(prop$oneOf)) {
     parsed_prop$oneOf <- lapply(prop$oneOf, function(option) {
-      list(
+      parsed_option <- list(
         title = if (!is.null(option$title)) {
           get_multilingual_field(option, "title")
         } else {
@@ -166,6 +157,18 @@ parse_property <- function(prop, schema) {
         },
         value = option$const
       )
+
+      # Recursively parse nested properties
+      if (!is.null(option$properties)) {
+        parsed_option$properties <- lapply(option$properties, function(p) parse_property(p, schema))
+      }
+
+      # Recursively handle nested oneOf
+      if (!is.null(option$oneOf)) {
+        parsed_option$oneOf <- lapply(option$oneOf, function(nested_option) parse_property(nested_option, schema))
+      }
+
+      return(parsed_option)
     })
     parsed_prop$type <- "select"
   }

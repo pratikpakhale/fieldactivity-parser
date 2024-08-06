@@ -78,21 +78,33 @@ create_properties_ui <- function(properties, ns, language = "en") {
         # Handle oneOf properties
         oneof_title <- h4(prop$title[[language]])
         oneof_id <- ns(paste0(make.names(prop$title[[language]]), "_oneof"))
-        oneof_options <- lapply(prop$oneOf, function(option) {
-          if (!is.null(option$title)) {
-            option$title[[language]]
-          } else {
-            option$value # Use value as the label if title is missing
-          }
-        })
-        oneof_values <- sapply(prop$oneOf, function(option) option$value)
+        oneof_options <- c(
+          setNames("", oneof_title), # Add the title as the default placeholder
+          setNames(
+            sapply(prop$oneOf, function(option) option$value),
+            sapply(prop$oneOf, function(option) {
+              if (!is.null(option$title)) {
+                option$title[[language]]
+              } else {
+                option$value
+              }
+            })
+          )
+        )
         oneof_select <- selectInput(oneof_id,
-          label = oneof_title,
-          choices = setNames(oneof_values, oneof_options)
+          label = h4(oneof_title),
+          choices = oneof_options,
+          selected = "" # Set the default placeholder as selected
         )
 
+
+        # Create a uiOutput for nested properties
+        nested_properties_id <- ns(paste0(make.names(prop$title[[language]]), "_nested"))
+        nested_properties <- uiOutput(nested_properties_id)
+
         return(div(
-          oneof_select
+          oneof_select,
+          nested_properties
         ))
       } else {
         # Create individual widget for other property types

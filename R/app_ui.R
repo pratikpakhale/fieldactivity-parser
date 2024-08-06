@@ -18,7 +18,7 @@ app_ui <- function(request) {
     sidebarLayout(
       sidebarPanel(
         selectInput("language", "Select Language", choices = c("en", "fi", "sv")),
-        uiOutput("event_selector")
+        # uiOutput("event_selector")
       ),
       mainPanel(
         uiOutput("dynamic_ui")

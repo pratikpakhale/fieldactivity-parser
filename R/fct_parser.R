@@ -19,10 +19,22 @@ parse_json_schema <- function(schema) {
   parsed_schema <- list()
 
   # Iterate through each event in the schema's oneOf array
-  for (event in schema$oneOf) {
-    event_type <- event$properties$mgmt_operations_event$const
-    parsed_schema[[event_type]] <- parse_event(event, schema)
+  # for (event in schema) {
+  #   event_type <- event$properties$mgmt_operations_event$const
+  #   parsed_schema[[event_type]] <- parse_event(event, schema)
+  # }
+
+  event_type <- schema$properties$mgmt_operations_event$const
+  if (is.null(event_type)) {
+    event_type <- schema$properties$mgmt_operations_event$title
   }
+  if (!is.null(event_type) && event_type != "") {
+    parsed_schema[[event_type]] <- parse_event(schema, schema)
+  } else {
+    parsed_schema[["Management Event"]] <- parse_event(schema, schema)
+    warning("event_type is NULL or empty")
+  }
+
 
   return(parsed_schema)
 }

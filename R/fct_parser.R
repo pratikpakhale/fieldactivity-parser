@@ -114,6 +114,15 @@ parse_property <- function(prop, schema) {
     type = prop$type
   )
 
+  if (!is.null(prop$format)) {
+    if (prop$format == "date") {
+      parsed_prop$type <- "date"
+    } else if (prop$format == "url") {
+      parsed_prop <- list()
+      return(parsed_prop)
+    }
+  }
+
   if (!is.null(prop$allOf)) {
     # Handle allOf properties (typically used for references)
     parsed_prop$type <- "select"

@@ -56,64 +56,65 @@ create_ui <- function(parsed_schema, ns, language = "en") {
 #'   age = list(type = "number", title = list(en = "Age"))
 #' )
 create_properties_ui <- function(properties, ns, language = "en") {
-  div(
-    lapply(properties, function(prop) {
-      if (prop$type == "array" && !is.null(prop$items) && prop$items$type == "object") {
-        # Handle array of objects
-        array_title <- h4(prop$title[[language]])
-        array_items <- create_properties_ui(prop$items$properties, ns, language)
-        div(
-          array_title,
-          div(class = "array-items", array_items)
-        )
-      } else if (prop$type == "object" && !is.null(prop$properties)) {
-        # Handle nested objects
-        object_title <- h4(prop$title[[language]])
-        object_properties <- create_properties_ui(prop$properties, ns, language)
-        div(
-          object_title,
-          div(class = "object-properties", object_properties)
-        )
-      } else if (!is.null(prop$oneOf)) {
-        # Handle oneOf properties
-        oneof_title <- h4(prop$title[[language]])
-        oneof_id <- ns(paste0(make.names(prop$title[[language]]), "_oneof"))
-        oneof_options <- c(
-          setNames("", oneof_title), # Add the title as the default placeholder
-          setNames(
-            sapply(prop$oneOf, function(option) option$value),
-            sapply(prop$oneOf, function(option) {
-              if (!is.null(option$title)) {
-                option$title[[language]]
-              } else {
-                option$value
-              }
-            })
-          )
-        )
-        oneof_select <- selectInput(oneof_id,
-          label = h4(oneof_title),
-          choices = oneof_options,
-          selected = "" # Set the default placeholder as selected
-        )
+  lapply(names(properties), function(prop_name) {
+    prop <- properties[[prop_name]]
 
+    if (!is.null(prop$oneOf)) {
+      # Handle oneOf properties
+      oneof_id <- ns(paste0(prop_name, "_oneof"))
 
-        # Create a uiOutput for nested properties
-        nested_properties_id <- ns(paste0(make.names(prop$title[[language]]), "_nested"))
-        nested_properties <- uiOutput(nested_properties_id)
-
-        return(div(
-          oneof_select,
-          nested_properties
-        ))
-      } else {
-        # Create individual widget for other property types
-        div(
-          create_widget(prop, ns, language)
+      # Create options with an empty default option
+      oneof_options <- c(
+        # "" = sprintf("Select %s", prop$title[[language]]),
+        setNames(
+          sapply(prop$oneOf, function(option) option$value),
+          sapply(prop$oneOf, function(option) {
+            if (!is.null(option$title) && !is.null(option$title[[language]])) {
+              option$title[[language]]
+            } else {
+              option$value
+            }
+          })
         )
-      }
-    })
-  )
+      )
+
+      oneof_select <- selectInput(oneof_id,
+        label = h4(prop$title[[language]]),
+        choices = oneof_options,
+        selected = ""
+      )
+
+      # Create a uiOutput for nested properties
+      nested_properties_id <- ns(paste0(prop_name, "_nested"))
+      nested_properties <- uiOutput(nested_properties_id)
+
+      div(
+        oneof_select,
+        nested_properties
+      )
+    } else if (prop$type == "array" && !is.null(prop$items) && prop$items$type == "object") {
+      # Handle array of objects
+      array_title <- h4(prop$title[[language]])
+      array_items <- create_properties_ui(prop$items$properties, ns, language)
+      div(
+        array_title,
+        div(class = "array-items", array_items)
+      )
+    } else if (prop$type == "object" && !is.null(prop$properties)) {
+      # Handle nested objects
+      object_title <- h4(prop$title[[language]])
+      object_properties <- create_properties_ui(prop$properties, ns, language)
+      div(
+        object_title,
+        div(class = "object-properties", object_properties)
+      )
+    } else {
+      # Create individual widget for other property types
+      div(
+        create_widget(prop, ns, language)
+      )
+    }
+  })
 }
 
 
@@ -160,7 +161,6 @@ create_oneof_ui <- function(oneof, ns, language = "en") {
     oneof_properties_ui
   )
 }
-
 
 
 #' Create individual widget for a property
@@ -250,6 +250,13 @@ create_widget <- function(element, ns = NS(NULL), language = "en") {
         )
       }
     },
+    "date" = {
+      dateInput(
+        inputId = element_code_name,
+        label = element_label,
+        value = NULL
+      )
+    },
     NULL # Default case for unknown types
   )
 
@@ -263,6 +270,7 @@ create_widget <- function(element, ns = NS(NULL), language = "en") {
     )
   )
 }
+
 
 
 #' Get choices for select inputs

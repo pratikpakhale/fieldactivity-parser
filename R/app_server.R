@@ -16,9 +16,7 @@ app_server <- function(input, output, session) {
   schema <- jsonlite::fromJSON(schema_file_path(), simplifyVector = FALSE)
   parsed_schema <- parse_json_schema(schema)
 
-  event_data <- reactive({
-    parsed_schema
-  })
+  event_data <- parsed_schema
 
   # Function to generate event UI
   generate_event_ui <- function(event, language) {
@@ -35,36 +33,36 @@ app_server <- function(input, output, session) {
 
   # Render the dynamic UI
   output$dynamic_ui <- renderUI({
-    event <- event_data()
+    event <- event_data
     generate_event_ui(event, input$language)
   })
 
   # Observer for oneOf properties
   observe({
-    event <- event_data()
-    if (!is.null(event)) {
-      lapply(names(event$properties), function(prop_name) {
-        prop <- event$properties[[prop_name]]
-        if (!is.null(prop$oneOf)) {
-          oneof_id <- NS("dynamic")(paste0(make.names(prop$title[[input$language]]), "_oneof"))
-          nested_properties_id <- NS("dynamic")(paste0(make.names(prop$title[[input$language]]), "_nested"))
+    lapply(names(parsed_schema$properties), function(prop_name) {
+      prop <- parsed_schema$properties[[prop_name]]
+      if (!is.null(prop$oneOf)) {
+        oneof_id <- NS("dynamic")(paste0(prop_name, "_oneof"))
+        nested_properties_id <- NS("dynamic")(paste0(prop_name, "_nested"))
 
-          output[[nested_properties_id]] <- renderUI({
-            selected_option <- input[[oneof_id]]
+        output[[nested_properties_id]] <- renderUI({
+          selected_option <- input[[oneof_id]]
+          if (selected_option != "") {
             selected_properties <- prop$oneOf[[which(sapply(prop$oneOf, function(option) option$value == selected_option))]]$properties
 
             if (!is.null(selected_properties)) {
               create_properties_ui(selected_properties, NS("dynamic"), input$language)
             }
-          })
-        }
-      })
-    }
+          }
+        })
+      }
+    })
   })
+
 
   # Observer for validation logic
   observe({
-    event <- event_data()
+    event <- event_data
     if (!is.null(event)) {
       lapply(names(event$properties), function(prop_name) {
         field <- event$properties[[prop_name]]

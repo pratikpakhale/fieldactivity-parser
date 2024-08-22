@@ -58,9 +58,7 @@ create_ui <- function(parsed_schema, ns, language = "en") {
 create_properties_ui <- function(properties, ns, language = "en") {
   lapply(names(properties), function(prop_name) {
     prop <- properties[[prop_name]]
-    if (!is.null(prop$oneOf) && length(prop$oneOf) > 0 && !is.null(prop$oneOf[[1]]$properties)) {
-      create_oneof_ui(prop$oneOf, ns, language)
-    } else if (!is.null(prop$oneOf)) {
+    if (!is.null(prop$oneOf)) {
       # print(paste0("building ui for ", prop_name))
       # Handle oneOf properties
       oneof_id <- ns(paste0(prop_name, "_oneof"))
@@ -138,21 +136,27 @@ create_properties_ui <- function(properties, ns, language = "en") {
 #' @examples
 #' oneof <- parsed_schema$fertilizer$oneOf
 #' oneof_ui <- create_oneof_ui(oneof, ns, "en")
-create_oneof_ui <- function(oneof, ns, language = "en") {
+create_oneof_ui <- function(oneof, ns, language = "en", parent = "oneof_select") {
   if (length(oneof) == 0) {
     return(NULL)
   }
 
   oneof_title <- h4("Select an option")
-  oneof_id <- ns("oneof_select")
-  oneof_options <- c(" " = " ", lapply(oneof, function(option) option$title[[language]]))
+  oneof_id <- ns(paste0(parent, "_oneof"))
+  oneof_options <- c(" " = " ", sapply(oneof, function(option) option$title[[language]]))
   oneof_select <- selectInput(oneof_id, label = NULL, choices = oneof_options)
 
-  oneof_properties_ui <- lapply(oneof, function(option) {
+  oneof_properties_ui <- lapply(seq_along(oneof), function(i) {
+    option <- oneof[[i]]
     option_properties <- create_properties_ui(option$properties, ns, language)
+    nested_oneof_ui <- NULL
+    if (!is.null(option$oneOf)) {
+      nested_oneof_ui <- create_oneof_ui(option$oneOf, ns, language, paste0(parent, "_", i))
+    }
+
     conditionalPanel(
-      condition = sprintf("input['%s'] == '%s'", oneof_id, option$title[[language]]),
-      option_properties
+      condition = sprintf("input['%s'] === '%s'", oneof_id, option$title[[language]]),
+      tagList(option_properties, nested_oneof_ui)
     )
   })
 

@@ -88,142 +88,495 @@
   },
   "oneOf": [
     {
-      "$id": "#observation",
-      "title": "observation",
-      "title_fi": "havainto",
-      "title_sv": "observation",
+      "$id": "#fertilizer",
+      "title": "fertilizer application",
+      "title_fi": "lannoitteen levitys",
+      "title_sv": "spridning av gödslingsmedel",
       "properties": {
         "mgmt_operations_event": {
-          "title": "observation",
-          "title_fi": "havainto",
-          "title_sv": "observation",
-          "const": "observation"
+          "title": "fertilizer application",
+          "title_fi": "lannoitteen levitys",
+          "title_sv": "spridning av gödslingsmedel",
+          "const": "fertilizer"
         },
-        "observation_type": {
-          "title": "observation type",
-          "title_fi": "havainnon tyyppi",
+        "N_in_applied_fertilizer": {
+          "title": "amount of total nitrogen (N) in fertilizer (kg/ha)",
+          "title2": "amount of nitrogen (N) in fertilizer (kg/ha)",
+          "title_fi": "typen (N) määrä lannoitteessa (kg/ha)",
+          "title_sv": "mängden lväve (N) i gödseln (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of total nitrogen (N) in fertilizer",
+            "unitless_title2": "amount of nitrogen (N) in fertilizer",
+            "unitless_title_fi": "typen (N) määrä lannoitteessa",
+            "unitless_title_sv": "mängden lväve (N) i gödseln"
+          }
+        },
+        "N_in_soluble_fertilizer": {
+          "title": "amount of soluble nitrogen (N) in fertilizer (kg/ha)",
+          "title_fi": "liukenevan typen (N) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of soluble nitrogen (N) in fertilizer",
+            "unitless_title_fi": "liukenevan typen (N) määrä lannoitteessa"
+          }
+        },
+        "phosphorus_applied_fert": {
+          "title": "amount of phosphorus (P) in fertilizer (kg/ha)",
+          "title_fi": "fosforin (P) määrä lannoitteessa (kg/ha)",
+          "title_sv": "mängden fosfor (P) i gödseln (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of phosphorus (P) in fertilizer",
+            "unitless_title_fi": "fosforin (P) määrä lannoitteessa",
+            "unitless_title_sv": "mängden fosfor (P) i gödseln"
+          }
+        },
+        "fertilizer_K_applied": {
+          "title": "amount of potassium (K) in fertilizer (kg/ha)",
+          "title_fi": "kaliumin (K) määrä lannoitteessa (kg/ha)",
+          "title_sv": "mängden kalium (K) i gödseln (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of potassium (K) in fertilizer",
+            "unitless_title_fi": "kaliumin (K) määrä lannoitteessa",
+            "unitless_title_sv": "mängden kalium (K) i gödseln"
+          }
+        },
+        "S_in_applied_fertilizer": {
+          "title": "amount of sulphur (S) in fertilizer (kg/ha)",
+          "title_fi": "rikin (S) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of sulphur (S) in fertilizer",
+            "unitless_title_fi": "rikin (S) määrä lannoitteessa"
+          }
+        },
+        "Ca_in_applied_fertilizer": {
+          "title": "amount of calcium (Ca) in fertilizer (kg/ha)",
+          "title_fi": "kalsiumin (Ca) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of calcium (Ca) in fertilizer",
+            "unitless_title_fi": "kalsiumin (Ca) määrä lannoitteessa"
+          }
+        },
+        "Mg_in_applied_fertilizer": {
+          "title": "amount of magnesium (Mg) in fertilizer (kg/ha)",
+          "title_fi": "magnesiumin (Mg) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of magnesium (Mg) in fertilizer",
+            "unitless_title_fi": "magnesiumin (Mg) määrä lannoitteessa"
+          }
+        },
+        "Na_in_applied_fertilizer": {
+          "title": "amount of sodium (Na) in fertilizer (kg/ha)",
+          "title_fi": "natriumin (Na) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of sodium (Na) in fertilizer",
+            "unitless_title_fi": "natriumin (Na) määrä lannoitteessa"
+          }
+        },
+        "Cu_in_applied_fertilizer": {
+          "title": "amount of copper (Cu) in fertilizer (kg/ha)",
+          "title_fi": "kuparin (Cu) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of copper (Cu) in fertilizer",
+            "unitless_title_fi": "kuparin (Cu) määrä lannoitteessa"
+          }
+        },
+        "Zn_in_applied_fertilizer": {
+          "title": "amount of zinc (Zn) in fertilizer (kg/ha)",
+          "title_fi": "sinkin (Zn) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of zinc (Zn) in fertilizer",
+            "unitless_title_fi": "sinkin (Zn) määrä lannoitteessa"
+          }
+        },
+        "B_in_applied_fertilizer": {
+          "title": "amount of boron (B) in fertilizer (kg/ha)",
+          "title_fi": "boorin (B) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of boron (B) in fertilizer",
+            "unitless_title_fi": "boorin (B) määrä lannoitteessa"
+          }
+        },
+        "Mn_in_applied_fertilizer": {
+          "title": "amount of manganese (Mn) in fertilizer (kg/ha)",
+          "title_fi": "mangaanin (Mn) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of manganese (Mn) in fertilizer",
+            "unitless_title_fi": "mangaanin (Mn) määrä lannoitteessa"
+          }
+        },
+        "Se_in_applied_fertilizer": {
+          "title": "amount of selenium (Se) in fertilizer (kg/ha)",
+          "title_fi": "seleenin (Se) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of selenium (Se) in fertilizer",
+            "unitless_title_fi": "seleenin (Se) määrä lannoitteessa"
+          }
+        },
+        "Fe_in_applied_fertilizer": {
+          "title": "amount of iron (Fe) in fertilizer (kg/ha)",
+          "title_fi": "raudan (Fe) määrä lannoitteessa (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "amount of iron (Fe) in fertilizer",
+            "unitless_title_fi": "raudan (Fe) määrä lannoitteessa"
+          }
+        },
+        "other_element_in_applied_fertilizer": {
+          "title": "other elements in fertilizer (kg/ha)",
+          "title_fi": "muut ravinteet lannoitteessa (kg/ha)",
           "type": "string"
+        },
+        "fertilizer_type": {
+          "title": "fertilizer type",
+          "title_fi": "lannoitteen tyyppi",
+          "type": "string"
+        },
+        "fertilizer_applic_method": {
+          "allOf": [
+            {
+              "title": "application method",
+              "title_fi": "levitystapa"
+            },
+            {
+              "$ref": "#/$defs/fertilizer_applic_method"
+            }
+          ]
+        },
+        "application_depth_fert": {
+          "title": "application depth (cm)",
+          "title_fi": "levityssyvyys (cm)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "cm",
+            "unitless_title": "application depth",
+            "unitless_title_fi": "levityssyvyys"
+          }
+        },
+        "fertilizer_total_amount": {
+          "title": "total amount of fertilizer (kg/ha)",
+          "title_fi": "lannoitteen kokonaismäärä (kg/ha)",
+          "title_sv": "totala mändgen gödsel (kg/ha)",
+          "type": "number",
+          "minimum": 0,
+          "x-ui": {
+            "unit": "kg/ha",
+            "unitless_title": "total amount of fertilizer",
+            "unitless_title_fi": "lannoitteen kokonaismäärä",
+            "unitless_title_sv": "totala mändgen gödsel"
+          }
         },
         "mgmt_event_long_notes": {
-          "title": "observations",
-          "title_fi": "havainnot",
-          "type": "string"
+          "title": "notes on fertilizer application",
+          "title_fi": "muistiinpanoja lannoitteen levityksestä",
+          "type": "string",
+          "x-ui": {
+            "form-type": "textAreaInput",
+            "form-placeholder": "any notes or observations about the event, e.g. \"biostimulant was added because the field suffered from drought\"",
+            "form-placeholder_fi": "mitä tahansa tapahtumaan liittyviä muistiinpanoja tai havaintoja, esim. \"lisäsin biostimulanttia pellon kuivuuden vuoksi\""
+          }
         }
       },
-      "required": ["date", "observation_type"],
       "oneOf": [
         {
-          "title": "water observation",
-          "title_fi": "vesihavainto",
+          "title": "mineral",
+          "title_fi": "väkilannoite",
           "properties": {
-            "observation_type": {
-              "title": "water observation",
-              "title_fi": "vesihavainto",
-              "const": "observation_type_water"
+            "fertilizer_type": {
+              "title": "mineral",
+              "title_fi": "väkilannoite",
+              "const": "fertilizer_type_mineral"
             },
-            "floodwater_depth": {
-              "title": "floodwater depth (mm)",
-              "title_fi": "tulvaveden syvyys (mm)",
+            "fertilizer_product_name": {
+              "title": "name of fertilizer",
+              "title_fi": "lannoitteen nimi",
+              "type": "string"
+            }
+          }
+        },
+        {
+          "title": "soil amendment",
+          "title_fi": "maanparannusaine",
+          "properties": {
+            "fertilizer_type": {
+              "title": "soil amendment",
+              "title_fi": "maanparannusaine",
+              "const": "fertilizer_type_soil_amendment"
+            }
+          },
+          "fertilizer_material": {
+            "title": "soil amendment substance",
+            "title_fi": "maanparannusaine",
+            "type": "string",
+            "oneOf": [
+              {
+                "title": "Bio char",
+                "title_fi": "Biohiili",
+                "const": "FE996"
+              },
+              {
+                "title": "Peat",
+                "title_fi": "Turve",
+                "const": "FE997"
+              },
+              {
+                "title": "Sawdust",
+                "title_fi": "Sahanpuru",
+                "const": "FE998"
+              },
+              {
+                "title": "Wood chip",
+                "title_fi": "Puulastu",
+                "const": "FE999"
+              }
+            ]
+          },
+          "fertilizer_material_source": {
+            "title": "fertilizer material source",
+            "title_fi": "Lannoitteen alkuperä",
+            "type": "string",
+            "x-ui": {
+              "placeholder": "e.g. local stables or own farm or Commercial (brand)",
+              "placeholder_fi": "esim. paikallinen talli, oma tila tai kaupallinen (tuotteen nimi)"
+            }
+          }
+        },
+        {
+          "title": "organic material application",
+          "title_fi": "eloperäisen lannoitteen levitys",
+          "title_sv": "applicering av organiskt material",
+          "properties": {
+            "fertilizer_type": {
+              "title": "organic material",
+              "title_fi": "eloperäinen aine",
+              "title_sv": "organisk material",
+              "const": "fertilizer_type_organic"
+            },
+            "organic_material": {
+              "title": "organic material",
+              "title_fi": "eloperäinen aine",
+              "title_sv": "organisk material",
+              "type": "string",
+              "oneOf": [
+                {
+                  "title": "generic crop residue",
+                  "title_fi": "yleinen kasvijäte",
+                  "title_sv": "allmänna växtrester",
+                  "const": "RE001"
+                },
+                {
+                  "title": "green manure",
+                  "title_fi": "viherlannoitus",
+                  "title_sv": "gröngödsel",
+                  "const": "RE002"
+                },
+                {
+                  "title": "barnyard manure",
+                  "title_fi": "kuivalanta",
+                  "title_sv": "gårdsgödsel",
+                  "const": "RE003"
+                },
+                {
+                  "title": "liquid manure",
+                  "title_fi": "lietelanta",
+                  "title_sv": "slamgödsel",
+                  "const": "RE004"
+                },
+                {
+                  "title": "compost",
+                  "title_fi": "komposti",
+                  "title_sv": "kompost",
+                  "const": "RE005"
+                },
+                {
+                  "title": "bark",
+                  "title_fi": "puun kuori",
+                  "title_sv": "bark",
+                  "const": "RE006"
+                },
+                {
+                  "title": "generic legume residue",
+                  "title_fi": "palkokasvijäte",
+                  "title_sv": "baljväxtrester",
+                  "const": "RE101"
+                },
+                {
+                  "title": "faba bean",
+                  "title_fi": "härkäpapu",
+                  "title_sv": "bondböna",
+                  "const": "RE109"
+                },
+                {
+                  "title": "pea residue",
+                  "title_fi": "hernejäte",
+                  "title_sv": "ärtavfall",
+                  "const": "RE110"
+                },
+                {
+                  "title": "hairy vetch",
+                  "title_fi": "ruisvirna",
+                  "title_sv": "luddvicker",
+                  "const": "RE111"
+                },
+                {
+                  "title": "generic cereal crop residue",
+                  "title_fi": "viljakasvijäte",
+                  "title_sv": "spannmålsavfall",
+                  "const": "RE201"
+                },
+                {
+                  "title": "wheat residue",
+                  "title_fi": "vehnäjäte",
+                  "title_sv": "veteavfall",
+                  "const": "RE205"
+                },
+                {
+                  "title": "barley",
+                  "title_fi": "ohra",
+                  "title_sv": "korn",
+                  "const": "RE206"
+                },
+                {
+                  "title": "rye",
+                  "title_fi": "ruis",
+                  "title_sv": "råg",
+                  "const": "RE208"
+                },
+                {
+                  "title": "generic grass",
+                  "title_fi": "ruohokasvi",
+                  "title_sv": "gräsväxti",
+                  "const": "RE301"
+                },
+                {
+                  "title": "bermudagrass",
+                  "title_fi": "varvasheinä",
+                  "title_sv": "hundtandsgräs",
+                  "const": "RE303"
+                },
+                {
+                  "title": "switchgrass",
+                  "title_fi": "lännenhirssi",
+                  "title_sv": "jungfruhirs",
+                  "const": "RE304"
+                },
+                {
+                  "title": "brachiaria",
+                  "title_fi": "viittaheinät",
+                  "title_sv": "brachiaria",
+                  "const": "RE305"
+                },
+                {
+                  "title": "forage grasses",
+                  "title_fi": "nurmikasvit",
+                  "title_sv": "vallväxter",
+                  "const": "RE306"
+                },
+                {
+                  "title": "decomposed crop residue",
+                  "title_fi": "maatunut kasvijäte",
+                  "title_sv": "nedbrutet växtavfall",
+                  "const": "RE999"
+                },
+                {
+                  "title": "other",
+                  "title_fi": "muu",
+                  "const": "REOTHER"
+                }
+              ]
+            },
+            "org_matter_moisture_conc": {
+              "title": "moisture concentration (%)",
+              "title_fi": "aineen kosteus (%)",
+              "x-ui": {
+                "unitless_title": "moisture concentration",
+                "unitless_title_fi": "aineen kosteus",
+                "unit": "%"
+              },
               "type": "number",
               "minimum": 0,
+              "maximum": 100
+            },
+            "org_matter_carbon_conc": {
+              "title": "carbon (C) concentration in material (%)",
+              "title_fi": "hiilen (C) määrä aineessa (%)",
               "x-ui": {
-                "unit": "mm",
-                "unitless_title": "floodwater depth",
-                "unitless_title_fi": "tulvaveden syvyys"
+                "unitless_title": "carbon (C) concentration",
+                "unitless_title_fi": "hiilen (C) määrä aineessa",
+                "unit": "%"
+              },
+              "type": "number",
+              "min": 0,
+              "max": 100
+            },
+            "org_material_c_to_n": {
+              "title": "C:N ratio in material",
+              "title_fi": "C:N suhde aineessa",
+              "type": "number",
+              "min": 0
+            },
+            "fertilizer_material_source": {
+              "title": "fertilizer material source",
+              "title_fi": "Lannoitteen alkuperä",
+              "type": "string",
+              "x-ui": {
+                "placeholder": "e.g. local stables or own farm or Commercial (brand)",
+                "placeholder_fi": "esim. paikallinen talli, oma tila tai kaupallinen (tuotteen nimi)"
               }
             },
-            "water_table_depth": {
-              "title": "water table level (cm)",
-              "title_fi": "pohjaveden pinnan syvyys (cm)",
-              "type": "number",
-              "minimum": 0,
+            "animal_fert_usage": {
+              "title": "animal fertilizer",
+              "title_fi": "eläimen lannoite",
+              "type": "string",
               "x-ui": {
-                "unit": "cm",
-                "unitless_title": "water table level",
-                "unitless_title_fi": "pohjaveden pinnan syvyys"
+                "placeholder": "which animal fertilizer, e.g. pig, horse, cow",
+                "placeholder_fi": "minkä eläimen lannoitetta, esim. sika, hevonen, lehmä"
               }
-            }
-          }
-        },
-        {
-          "title": "animals",
-          "title_fi": "eläimet",
-          "properties": {
-            "observation_type": {
-              "title": "animals",
-              "title_fi": "eläimet",
-              "const": "observation_type_animals"
-            }
-          }
-        },
-        {
-          "title": "pests",
-          "title_fi": "tuholaiset",
-          "properties": {
-            "observation_type": {
-              "title": "pests",
-              "title_fi": "tuholaiset",
-              "const": "observation_type_pests"
-            },
-            "plant_pop_reduct_cum": {
-              "title": "amount of plants eaten (%, cumulative)",
-              "title_fi": "syötyjen kasvien määrä (%, kumulatiivinen)",
-              "type": "number",
-              "minimum": 0,
-              "maximum": 0,
-              "x-ui": {
-                "unit": "%",
-                "unitless_title": "amount of plants eaten",
-                "unitless_title_fi": "syötyjen kasvien määrä"
-              }
-            }
-          }
-        },
-        {
-          "title": "disturbance",
-          "title_fi": "häiriö",
-          "properties": {
-            "observation_type": {
-              "title": "disturbance",
-              "title_fi": "häiriö",
-              "const": "observation_type_disturbance"
-            }
-          }
-        },
-        {
-          "title": "management",
-          "title_fi": "tilanhoito",
-          "properties": {
-            "observation_type": {
-              "title": "management",
-              "title_fi": "tilanhoito",
-              "const": "observation_type_management"
-            },
-            "fuel_amount": {
-              "title": "fuel used (liters/ha)",
-              "title_fi": "käytetty polttoaine (litraa/ha)",
-              "type": "number",
-              "minimum": 0,
-              "x-ui": {
-                "unit": "L/ha",
-                "unitless_title": "fuel used",
-                "unitless_title_fi": "käytetty polttoaine"
-              }
-            }
-          }
-        },
-        {
-          "title": "other",
-          "title_fi": "muu",
-          "properties": {
-            "observation_type": {
-              "title": "other",
-              "title_fi": "muu",
-              "const": "observation_type_other"
             }
           }
         }
-      ]
+      ],
+      "required": ["date", "fertilizer_type", "fertilizer_total_amount"]
     }
   ],
   "$defs": {

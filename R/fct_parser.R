@@ -66,7 +66,10 @@ parse_event <- function(event, schema) {
     parsed_event$oneOf <- lapply(event$oneOf, function(option) {
       list(
         title = get_multilingual_field(option, "title"),
-        properties = lapply(option$properties, function(p) parse_property(p, schema))
+        properties = lapply(option$properties, function(p) parse_property(p, schema)),
+        oneOf = lapply(option$oneOf, function(p) {
+          parse_event(p, schema)
+        })
       )
     })
   }

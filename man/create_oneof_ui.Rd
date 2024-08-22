@@ -4,7 +4,7 @@
 \alias{create_oneof_ui}
 \title{Create UI elements for oneOf sections}
 \usage{
-create_oneof_ui(oneof, ns, language = "en")
+create_oneof_ui(oneof, ns, language = "en", parent = "oneof_select")
 }
 \arguments{
 \item{oneof}{A list containing the oneOf options from the parsed schema}

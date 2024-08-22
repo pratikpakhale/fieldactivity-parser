@@ -143,7 +143,15 @@ create_oneof_ui <- function(oneof, ns, language = "en", parent = "oneof_select")
 
   oneof_title <- h4("Select an option")
   oneof_id <- ns(paste0(parent, "_oneof"))
-  oneof_options <- c(" " = " ", sapply(oneof, function(option) option$title[[language]]))
+  oneof_options <- c(" " = " ", sapply(seq_along(oneof), function(i) {
+    option <- oneof[[i]]
+    if (!is.null(option$title) && !is.null(option$title[[language]])) {
+      option$title[[language]]
+    } else {
+      paste("Option", i)
+    }
+  }))
+
   oneof_select <- selectInput(oneof_id, label = NULL, choices = oneof_options)
 
   oneof_properties_ui <- lapply(seq_along(oneof), function(i) {

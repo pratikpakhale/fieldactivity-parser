@@ -2758,6 +2758,7 @@
       "required": ["date", "observation_type"],
       "oneOf": [
         {
+          "title": "soil",
           "properties": {
             "observation_type": {
               "title": "soil",
@@ -2964,6 +2965,7 @@
           }
         },
         {
+          "title": "vegetation",
           "properties": {
             "observation_type": {
               "title": "vegetation",

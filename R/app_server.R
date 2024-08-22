@@ -2,7 +2,7 @@
 #'
 #' @return The path to the schema file
 schema_file_path <- function() {
-  system.file("extdata", "schema_test.json", package = "fieldactivityParser")
+  system.file("extdata", "schema.json", package = "fieldactivityParser")
 }
 
 #' The application server-side

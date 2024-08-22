@@ -2747,7 +2747,10 @@
         "observation_type": {
           "title": "observation type",
           "title_fi": "havainnon tyyppi",
-          "type": "string"
+          "type": "string",
+          "x-ui": {
+            "oneOf": true
+          }
         },
         "mgmt_event_long_notes": {
           "title": "observations",

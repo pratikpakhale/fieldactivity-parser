@@ -4,7 +4,13 @@
 \alias{create_widget}
 \title{Create individual widget for a property}
 \usage{
-create_widget(element, ns = NS(NULL), language = "en")
+create_widget(
+  element,
+  ns = NS(NULL),
+  language = "en",
+  oneof_id = NULL,
+  oneof_options = NULL
+)
 }
 \arguments{
 \item{element}{A parsed property structure}

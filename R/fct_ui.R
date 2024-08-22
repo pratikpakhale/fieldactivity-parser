@@ -18,9 +18,12 @@
 #' parsed_schema <- parse_json_schema(schema)
 create_ui <- function(parsed_schema, ns, language = "en") {
   ui_elements <- lapply(parsed_schema, function(event) {
-    event_properties <- create_properties_ui(event$properties, ns, language)
     event_oneof <- create_oneof_ui(event$oneOf, ns, language)
-    tagList(event_properties, event_oneof)
+    event_properties <- create_properties_ui(
+      event$properties, ns, language,
+      event_oneof$id, event_oneof$options
+    )
+    tagList(event_properties, event_oneof$elements)
   })
 
   return(tagList(ui_elements))
@@ -55,7 +58,7 @@ create_ui <- function(parsed_schema, ns, language = "en") {
 #'   name = list(type = "string", title = list(en = "Name")),
 #'   age = list(type = "number", title = list(en = "Age"))
 #' )
-create_properties_ui <- function(properties, ns, language = "en") {
+create_properties_ui <- function(properties, ns, language = "en", oneof_id = NULL, oneof_options = NULL) {
   lapply(names(properties), function(prop_name) {
     prop <- properties[[prop_name]]
     if (!is.null(prop$oneOf)) {
@@ -110,7 +113,7 @@ create_properties_ui <- function(properties, ns, language = "en") {
     } else {
       # Create individual widget for other property types
       div(
-        create_widget(prop, ns, language)
+        create_widget(prop, ns, language, oneof_id, oneof_options)
       )
     }
   })
@@ -141,7 +144,7 @@ create_oneof_ui <- function(oneof, ns, language = "en", parent = "oneof_select")
     return(NULL)
   }
 
-  oneof_title <- h4("Select an option")
+
   oneof_id <- ns(paste0(parent, "_oneof"))
   oneof_options <- c(" " = " ", sapply(seq_along(oneof), function(i) {
     option <- oneof[[i]]
@@ -152,27 +155,27 @@ create_oneof_ui <- function(oneof, ns, language = "en", parent = "oneof_select")
     }
   }))
 
-  oneof_select <- selectInput(oneof_id, label = NULL, choices = oneof_options)
+  oneof_select <- selectInput(oneof_id, label = "Select an option", choices = oneof_options)
 
   oneof_properties_ui <- lapply(seq_along(oneof), function(i) {
     option <- oneof[[i]]
-    option_properties <- create_properties_ui(option$properties, ns, language)
+
     nested_oneof_ui <- NULL
     if (!is.null(option$oneOf)) {
       nested_oneof_ui <- create_oneof_ui(option$oneOf, ns, language, paste0(parent, "_", i))
     }
+    option_properties <- create_properties_ui(option$properties, ns, language, nested_oneof_ui$id, nested_oneof_ui$options)
 
     conditionalPanel(
       condition = sprintf("input['%s'] === '%s'", oneof_id, option$title[[language]]),
-      tagList(option_properties, nested_oneof_ui)
+      tagList(option_properties, nested_oneof_ui$elements)
     )
   })
 
-  tagList(
-    oneof_title,
+  return_list <- list(elements = tagList(
     oneof_select,
     oneof_properties_ui
-  )
+  ), id = oneof_id, options = oneof_options)
 }
 
 
@@ -197,7 +200,7 @@ create_oneof_ui <- function(oneof, ns, language = "en", parent = "oneof_select")
 #' @examples
 #' element <- list(type = "number", title = list(en = "Age"), minimum = 0, maximum = 120)
 #' widget <- create_widget(element, ns, "en")
-create_widget <- function(element, ns = NS(NULL), language = "en") {
+create_widget <- function(element, ns = NS(NULL), language = "en", oneof_id = NULL, oneof_options = NULL) {
   if (is.null(element$type)) {
     return(NULL)
   }
@@ -272,6 +275,10 @@ create_widget <- function(element, ns = NS(NULL), language = "en") {
     },
     NULL # Default case for unknown types
   )
+
+  if (!is.null(element$ui) && !is.null(element$ui$oneOf) && !is.null(oneof_id)) {
+    input_element <- selectInput(oneof_id, label = element_label, choices = oneof_options)
+  }
 
   validation_id <- paste0(element_code_name, "_validation")
 

@@ -4,7 +4,13 @@
 \alias{create_properties_ui}
 \title{Create UI elements for a set of properties}
 \usage{
-create_properties_ui(properties, ns, language = "en")
+create_properties_ui(
+  properties,
+  ns,
+  language = "en",
+  oneof_id = NULL,
+  oneof_options = NULL
+)
 }
 \arguments{
 \item{properties}{A list of parsed properties (output from parse_property)}

@@ -47,7 +47,7 @@ app_server <- function(input, output, session) {
 
         output[[nested_properties_id]] <- renderUI({
           selected_option <- input[[oneof_id]]
-          if (selected_option != "") {
+          if (selected_option != " ") {
             selected_properties <- prop$oneOf[[which(sapply(prop$oneOf, function(option) option$value == selected_option))]]$properties
 
             if (!is.null(selected_properties)) {

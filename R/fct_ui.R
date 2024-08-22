@@ -64,8 +64,7 @@ create_properties_ui <- function(properties, ns, language = "en") {
       oneof_id <- ns(paste0(prop_name, "_oneof"))
 
       # Create options with an empty default option
-      oneof_options <- c(
-        # "" = sprintf("Select %s", prop$title[[language]]),
+      oneof_options <-
         setNames(
           sapply(prop$oneOf, function(option) option$value),
           sapply(prop$oneOf, function(option) {
@@ -76,7 +75,7 @@ create_properties_ui <- function(properties, ns, language = "en") {
             }
           })
         )
-      )
+
 
       oneof_select <- selectInput(oneof_id,
         label = h4(prop$title[[language]]),
@@ -144,7 +143,7 @@ create_oneof_ui <- function(oneof, ns, language = "en") {
 
   oneof_title <- h4("Select an option")
   oneof_id <- ns("oneof_select")
-  oneof_options <- lapply(oneof, function(option) option$title[[language]])
+  oneof_options <- c(" " = " ", lapply(oneof, function(option) option$title[[language]]))
   oneof_select <- selectInput(oneof_id, label = NULL, choices = oneof_options)
 
   oneof_properties_ui <- lapply(oneof, function(option) {

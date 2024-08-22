@@ -22,10 +22,7 @@ parse_json_schema <- function(schema) {
   #   parsed_schema[[event_type]] <- parse_event(event, schema)
   # }
 
-
   event <- parse_event(schema, schema)
-
-
 
   return(event)
 }
@@ -167,14 +164,11 @@ parse_property <- function(prop, schema) {
         value = option$const
       )
 
+      # print(paste0("parsing oneOf for ", parsed_prop$title$en))
+
       # Recursively parse nested properties
       if (!is.null(option$properties)) {
         parsed_option$properties <- lapply(option$properties, function(p) parse_property(p, schema))
-      }
-
-      # Recursively handle nested oneOf
-      if (!is.null(option$oneOf)) {
-        parsed_option$oneOf <- lapply(option$oneOf, function(nested_option) parse_property(nested_option, schema))
       }
 
       return(parsed_option)

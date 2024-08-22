@@ -58,8 +58,10 @@ create_ui <- function(parsed_schema, ns, language = "en") {
 create_properties_ui <- function(properties, ns, language = "en") {
   lapply(names(properties), function(prop_name) {
     prop <- properties[[prop_name]]
-
-    if (!is.null(prop$oneOf)) {
+    if (!is.null(prop$oneOf) && length(prop$oneOf) > 0 && !is.null(prop$oneOf[[1]]$properties)) {
+      create_oneof_ui(prop$oneOf, ns, language)
+    } else if (!is.null(prop$oneOf)) {
+      # print(paste0("building ui for ", prop_name))
       # Handle oneOf properties
       oneof_id <- ns(paste0(prop_name, "_oneof"))
 

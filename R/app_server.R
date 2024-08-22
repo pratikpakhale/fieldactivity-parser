@@ -37,44 +37,7 @@ app_server <- function(input, output, session) {
     generate_event_ui(event, input$language)
   })
 
-  # Observer for oneOf properties
-  observe({
-    lapply(names(parsed_schema$properties), function(prop_name) {
-      prop <- parsed_schema$properties[[prop_name]]
-      if (!is.null(prop$oneOf)) {
-        oneof_id <- NS("dynamic")(paste0(prop_name, "_oneof"))
-        nested_properties_id <- NS("dynamic")(paste0(prop_name, "_nested"))
 
-        output[[nested_properties_id]] <- renderUI({
-          selected_option <- input[[oneof_id]]
-          if (selected_option != " ") {
-            selected_properties <- prop$oneOf[[which(sapply(prop$oneOf, function(option) option$value == selected_option))]]$properties
-
-            if (!is.null(selected_properties)) {
-              create_properties_ui(selected_properties, NS("dynamic"), input$language)
-            }
-          }
-        })
-      }
-    })
-  })
-
-
-  # Observer for validation logic
-  observe({
-    event <- event_data
-    if (!is.null(event)) {
-      lapply(names(event$properties), function(prop_name) {
-        field <- event$properties[[prop_name]]
-        input_id <- NS("dynamic")(make.names(field$title[[input$language]]))
-        # Add your validation logic here
-        # For example:
-        # observeEvent(input[[input_id]], {
-        #   # Validation code
-        # })
-      })
-    }
-  })
 
   # Update UI elements when language changes
   observeEvent(input$language, {

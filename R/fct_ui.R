@@ -157,6 +157,8 @@ create_oneof_ui <- function(oneof, ns, language = "en", parent = "oneof_select")
 
   oneof_select <- selectInput(oneof_id, label = "Select an option", choices = oneof_options)
 
+  oneof_select <- NULL
+
   oneof_properties_ui <- lapply(seq_along(oneof), function(i) {
     option <- oneof[[i]]
 
@@ -204,7 +206,7 @@ create_widget <- function(element, ns = NS(NULL), language = "en", oneof_id = NU
   if (is.null(element$type)) {
     return(NULL)
   }
-
+  selectInput
   element_label <- element$title[[language]]
   element_code_name <- ns(make.names(element_label))
 
@@ -276,7 +278,7 @@ create_widget <- function(element, ns = NS(NULL), language = "en", oneof_id = NU
     NULL # Default case for unknown types
   )
 
-  if (!is.null(element$ui) && !is.null(element$ui$oneOf) && !is.null(oneof_id)) {
+  if (!is.null(element$ui) && !is.null(element$ui$discriminator) && !is.null(oneof_id)) {
     input_element <- selectInput(oneof_id, label = element_label, choices = oneof_options)
   }
 
